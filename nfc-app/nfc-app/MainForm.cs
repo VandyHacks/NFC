@@ -18,9 +18,8 @@ namespace nfc_app
 			//
 			InitializeComponent();
 			
-			//
-			// TODO: Add constructor code after the InitializeComponent() call.
-			//
+			string data = "1234"
+			SendKeys.Send(data);
 		}
 	}
 }
