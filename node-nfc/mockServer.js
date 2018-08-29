@@ -15,7 +15,9 @@ app.listen(port, function () {
 
 // generates a fake qr unique id every 5 seconds
 setInterval(function () {
-    fake_qr_data.push(getRandomInt(10000000,99999999))
+    let n = getRandomInt(10000000,99999999)
+    fake_qr_data.push(n)
+    console.log(n)
 }, 5000);
 
 // generate random int in range
