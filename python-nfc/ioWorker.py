@@ -11,16 +11,20 @@ import json
 def getNFCforQR(qrcode): 
     with open("qr-nfc-pairs.json", mode = "r") as jsonfile:
         jsondata = json.load(jsonfile) 
-        nfcUID = raw_input("\nPlease scan NFC tag.\n")
+        nfcUID = raw_input("\nPlease scan NFC tag\n")
         while len(nfcUID) != 14:
-            nfcUID = raw_input("Please rescan NFC tag.\n")
+            nfcUID = raw_input("Invalid NFC tag, please rescan\n")
 
         for key in jsondata:
             if key == qrcode:
-                print "Found duplicate QR code"
+                print "ERROR: Found duplicate QR code\n"
                 return
             elif jsondata[key] == nfcUID:
-                print "Found duplicate NFC UID"
+                print "ERROR: Found duplicate NFC UID\n"
+                response = raw_input("Try another tag (y/n)?\n")
+                if response != 'n':
+                    getNFCforQR(qrcode)
+                print "WARNING: QR code %s was not associated with NFC\n" % qrcode
                 return
         
     with open("qr-nfc-pairs.json", mode = "w") as jsonfile:
@@ -41,7 +45,7 @@ def poll():
         #split last word and remove ']'
         qrcode = contents.rsplit(',', 1)[-1][:-1]
 
-        print "Found new QR code "  
+        print "Found new QR code"  
         print qrcode
         getNFCforQR(qrcode)
 
