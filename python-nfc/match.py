@@ -11,9 +11,10 @@ import json
 def getNFCforQR(qrcode): 
     with open("qr-nfc-pairs.json", mode = "r") as jsonfile:
         jsondata = json.load(jsonfile) 
+
         nfcUID = raw_input("\nPlease scan NFC tag.\n")
         while len(nfcUID) != 14:
-            nfcUID = raw_input("Please rescan NFC tag.\n")
+            nfcUID = raw_input("Please rescan NFC tag\n")
 
         for key in jsondata:
             if key == qrcode:
