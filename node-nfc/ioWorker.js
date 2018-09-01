@@ -1,8 +1,12 @@
-// constantly polls a URL
-// writes to JSON file
+/*
+constantly polls a URL
+writes to JSON file
+NOTE: a better solution to repeated polling is via WebHooks, but polling works fine
 
+UPDATE 9/1/18: Unused, use python-nfc/ioWorker.py instead
+*/
 
-// NOTE: a better solution to repeated polling is via WebHooks, but polling works fine
+/*
 
 const fetch = require('node-fetch') // for http requests?
 const http = require('http') // native nodejs http requests
@@ -53,7 +57,7 @@ function writeToFile(ids_array){
         
         // 3. convert it back to json & write to file
         let output = JSON.stringify({pairs: pairs});
-        fs.writeFile('myjsonfile.json', output, 'utf8', function(err){
+        fs.writeFile(FILENAME, output, 'utf8', function(err){
             if(err){
                 console.error(err)
             }
@@ -63,3 +67,4 @@ function writeToFile(ids_array){
         });
     });
 }
+*/
