@@ -15,7 +15,5 @@ npm start
 Serves live updating array (as a JSON string) to `localhost:3000/qrdata`. Use this to mock constantly scanning QR data (an array of unique student IDs). The goal is to associate each unique student ID with a NFC UUID.
 
 
-### C# GotoTag app (`/nfc-app`)
-https://gototags.com/windows-app/docs/keyboard-emulation/ which uses [sendkey.send](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send)
-
-then, intercept the key fire event somehow (WinForms onkeydown?) and then do a POST to the VH server (use the same endpoints as the QR scanner)
+### Python IO script (`/python-nfc/ioWorker.py`)
+Matches nfc uuids to qr scan ids (from `/qrdata`), and writes to JSON script.
