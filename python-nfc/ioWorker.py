@@ -4,11 +4,17 @@ import json
 import pymongo
 from pymongo import MongoClient
 
-# 1. Checks for endpoint to have new QR code
-# 2. Prompts for new NFC UID to associate with QR code.
-#    This will be autopasted in by GoTo tag reader.
-# 3. Load json and validate that the QR code and NFC UID haven't been added.
-# 4. Write the new pair into the json
+# 1. Checks if we are doing the checkin event or not
+
+# Check in procedures
+# 1. Checks endpoint for new qr code
+# 2. Prompt for nfc scan
+# 3. Verify qr and nfc pair
+# 4. Write to db
+
+# Marking attendence
+# 1. Get student id from db based on nfc uid
+# 2. Try to push student id to attendees list of proper event
 
 #TODO - Implement a way to actually quit
 
@@ -81,10 +87,11 @@ def markAttendance(eventid):
             print("Could not find student for NFC uid")
             continue
 
+        #TODO - probably want to verify event exists
         studentID = entry['studentID']
         db['events'].update( {'_id': 'TEST_EVENT'}, {'$push': {'attendees': studentID}} )
 
-        #TODO - verify 
+        #TODO - verify we actually did it
         print("Marked attended")
         
 init()
