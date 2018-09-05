@@ -35,6 +35,8 @@ def getDb():
 def getNFCforQR(qrcode): 
     db = getDb()
     nfcUID = input("\nPlease scan NFC tag\n")
+
+    # TODO - possibly have better validation of nfcUID format
     while len(nfcUID) != 14:
         nfcUID = input("Invalid NFC tag, please rescan\n")
 
@@ -49,7 +51,7 @@ def getNFCforQR(qrcode):
             nfcUID = input("\nPlease scan NFC tag\n")
         else:
             print("WARNING: QR code %s was not associated with NFC\n" % qrcode)
-        return
+            return
 
     db = getDb()
     db['studentID-nfcUID'].insert( {"_id": nfcUID, "studentID": qrcode} )
