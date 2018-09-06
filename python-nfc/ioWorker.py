@@ -33,18 +33,19 @@ def getDb():
     return db
 
 def getNFCforQR(qrcode): 
+    # TODO - verify qrcode/studentID format
     db = getDb()
-    nfcUID = input("\nPlease scan NFC tag\n")
 
     # TODO - possibly have better validation of nfcUID format
+    nfcUID = input("\nPlease scan NFC tag\n")
     while len(nfcUID) != 14:
-        nfcUID = input("Invalid NFC tag, please rescan\n")
+        nfcUID = input("ERROR: Invalid NFC tag, please rescan\n")
 
     if db['studentID-nfcUID'].find_one( {'studentID': {'$eq': qrcode}} ) != None:
         print("ERROR: Found duplicate QR code\n")
         return
 
-    while db['studentID-nfcUID'].find_one( {'_id' : {'$eq': nfcUID}} ) != None:
+    while db['studentID-nfcUID'].find_one( {'_id': {'$eq': nfcUID}} ) != None:
         print("ERROR: Found duplicate NFC UID\n")
         response = input("Try another tag (y/n)?\n")
         if response != 'n':
@@ -53,21 +54,24 @@ def getNFCforQR(qrcode):
             print("WARNING: QR code %s was not associated with NFC\n" % qrcode)
             return
 
-    db = getDb()
     db['studentID-nfcUID'].insert( {"_id": nfcUID, "studentID": qrcode} )
 
-    # TODO - probably actually verify this
-    print("\n Successfully asssociated student and NFC UID\n")
+    if db['studentID-nfcUID'].find_one( {
+                                        'id': {'$eq': nfcUID},
+                                        'studentID': {'$eq': qrcode}
+                                        } ) != None:
+        print("\nSuccessfully associated student and NFC UID\n")
+    else:
+        print("\nERROR: Something went wrong writing to db\n")
 
-prev = ""
+prevLength = 0
 def pollQrData():
-    global prev
+    global prevLength
     print("Polling")
     contents = urllib.request.urlopen("http://localhost:3000/qrdata").read().decode("utf-8")
 
-    if prev != contents:
-        print("Endpoint updated")
-        prev = contents
+    if prevLength != len(contents):
+        prev = len(contents)
 
         #split last word and remove ']'
         qrcode = contents.rsplit(',', 1)[-1][:-1]
@@ -84,16 +88,28 @@ def markAttendance(eventid):
         nfcUID = input("\nPlease scan NFC tag\n")
         while len(nfcUID) != 14:
             nfcUID = input("Invalid NFC tag, please rescan\n")
-        entry = db['studentID-nfcUID'].find_one( {'_id' : {'$eq': nfcUID}})
+
+        entry = db['studentID-nfcUID'].find_one( {'_id': {'$eq': nfcUID}})
         if entry == None:
-            print("Could not find student for NFC uid")
+            print("ERROR: Could not find student for NFC uid")
             continue
 
-        #TODO - probably want to verify event exists
         studentID = entry['studentID']
+        event = db['events'].find_one( {'_id': {'$eq': 'TEST_EVENT'}} )
+        if event == None:
+            print("ERROR: could not find eventid")
+            break
+
+        if studentID in event['attendees']:
+            print("WARNING: student has already attended event")
+
         db['events'].update( {'_id': 'TEST_EVENT'}, {'$push': {'attendees': studentID}} )
 
-        #TODO - verify we actually did it
-        print("Marked attended")
-        
+        if studentID in event['attendees']:
+            print("Successfully marked attended")
+        else:
+            print("\nERROR: Something went wrong writing to db\n")
+
+
+
 init()
