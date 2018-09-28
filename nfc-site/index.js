@@ -12,15 +12,13 @@ getEvents()
     });
 
 async function getEvents () {
-    let headers = new Headers({
-        "Accept"       : "application/json",
-        "Content-Type" : "application/json",
-        "User-Agent"   : "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0",
-    });
-
-    
     // await response of fetch call
-    let response = await fetch('https://apply.vandyhacks.org/api/events',{ headers: headers});
+    let API_URL ='https://apply.vandyhacks.org/api/events'
+    if (!location.hostname.endsWith('vandyhacks.org')) {
+        // primarily to bypass CORS, see https://github.com/Freeboard/thingproxy
+        API_URL = 'https://thingproxy.freeboard.io/fetch/' + API_URL
+    }
+    let response = await fetch(API_URL);
     // only proceed once promise is resolved
     let data = await response.json();
     // only proceed once second promise is resolved
