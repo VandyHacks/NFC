@@ -12,15 +12,13 @@ getEvents()
     });
 
 async function getEvents () {
-    // await response of fetch call
     let API_URL ='https://apply.vandyhacks.org/api/events'
     if (!location.hostname.endsWith('vandyhacks.org')) {
-        // primarily to bypass CORS, see https://github.com/Freeboard/thingproxy
+        // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
+        // works by proxying client-side API call through a server (could host your own proxy as well)
         API_URL = 'https://thingproxy.freeboard.io/fetch/' + API_URL
     }
     let response = await fetch(API_URL);
-    // only proceed once promise is resolved
     let data = await response.json();
-    // only proceed once second promise is resolved
     return data;
 }
