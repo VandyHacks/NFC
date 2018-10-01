@@ -2,7 +2,7 @@ const dataList = document.getElementById('json-datalist');
 const input = document.getElementById('eventcode');
 let token = ''
 
-const EVENT_URL = 'https://apply.vandyhacks.org/api/events'
+let EVENT_URL = 'https://apply.vandyhacks.org/api/events'
 let EVENT_ID = "" // eg. '5ba688091834080020e18db8'
 const ADMIT_URL = `${EVENT_URL}/${EVENT_ID}/admit/${id}` // to admit user by db id
 const UNADMIT_URL = `${EVENT_URL}/${EVENT_ID}/unadmit/${id}` // to unadmit user by db id
@@ -27,7 +27,7 @@ async function getEvents () {
     let response = await fetch(EVENT_URL);
     let events = await response.json();
     // filter only open events
-    events = events.filter(e => e.open))
+    events = events.filter(e => e.open)
     return events;
 }
 
@@ -37,28 +37,24 @@ See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 **********************************************************************/
   function admitAttendee(id) {
     const header = tokenHeader();
-    if (!invalid) {
         fetch(ADMIT_URL, {
             headers: header
         })
         .then(res => {
             res = { headers: 'admitted' }
         });
-    }
-    returnToScan();
+    // returnToScan();
   }
 
   function unadmitAttendee(id) {
     const header = tokenHeader();
     console.log('unadmit');
-    if (!invalid) {
-        fetch(UNADMIT_URL, {
-            headers: header
-        }).then(res => {
-            res = { headers: unadmitted }
-        });
-    }
-    returnToScan();
+    fetch(UNADMIT_URL, {
+        headers: header
+    }).then(res => {
+        res = { headers: unadmitted }
+    });
+    // returnToScan();
 }
 
 // set auth JWT token
