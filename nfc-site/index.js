@@ -1,6 +1,7 @@
 const dataList = document.getElementById("json-datalist");
 const input = document.getElementById("eventcode");
 let token = "";
+let id = "";
 
 let EVENT_URL = "https://apply.vandyhacks.org/api/events";
 let EVENT_ID = ""; // eg. '5ba688091834080020e18db8'
