@@ -11,30 +11,54 @@ let EVENT_ID = ""; // eg. '5ba688091834080020e18db8';
 let EVENT_URL = `${API_URL}/events/`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
+const MOCK_USERS_URL = "https://api.myjson.com/bins/nn3dk"
 
 window.onload = e => {
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
   getEvents().then(events => {
     console.log(events);
-    // TODO: use this to populate drop down
-    input.onkeyup = function() {
-      // nfc emulates keyboard...
-    };
+    $.each(events, function() {
+      $("#event-selector").append($("<option />").val(this._id).text(this.name));
+    });
   });
 
-  // 2. GET all users from USERS_URL (must have proper token)
-  fetch(transformURL(USERS_URL), {
-    header: tokenHeader()
-  })
-    .then(data => {
-      this.users = data;
-      console.log(this.users);
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  // TODO(tim): real fetch users
+  // // 2. GET all users from USERS_URL (must have proper token)
+  // fetch(transformURL(USERS_URL), {
+  //   header: tokenHeader()
+  // })
+  //   .then(data => {
+  //     this.users = data;
+  //     console.log(this.users);
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
+
+  // Mock fetch users
+  fetch(transformURL(MOCK_USERS_URL)).then(data => {
+    return data.json();
+  }).then(json => {
+    users = json;
+    console.log(users);
+  });
 };
-// TODO: on auth code popup submit, set the token and call setToken()
+
+// Displays user of corresponding shortcode
+$("#shortcode").keyup(() => {
+  let match = users.filter(user => user.shortcode == $("#shortcode").val())
+  $("#student-info").html(JSON.stringify(match, null, 2).replace(/^\[|]$/g,""))
+});
+
+// On auth code popup submit, set the token and call setToken()
+$("#auth-button").click(() => {
+  token = $("#authcode").val()
+  setToken()
+});
+
+// TODO(tim): actually submit nfc-user pairs
+
+// TODO(tim): implement undo button
 
 async function getEvents() {
   let response = await fetch(transformURL(EVENT_URL));
@@ -56,7 +80,7 @@ let transformURL = url => {
 };
 
 /**********************************************************************
-This section below is pretty much copied from QR scan logic: 
+This section below is pretty much copied from QR scan logic:
 See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 **********************************************************************/
 function admitAttendee(id) {
@@ -92,7 +116,7 @@ function tokenHeader() {
 function setToken() {
   console.log(token);
   console.log("pls");
-  fetch("https://apply.vandyhacks.org/auth/eventcode/", {
+  fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify({ token: token })
@@ -101,6 +125,7 @@ function setToken() {
       // scan();
       tokenValid = true;
       window.localStorage.storedToken2 = token;
+      $("#auth").remove()
     } else {
       console.log("invalid");
       authError = "Invalid token";

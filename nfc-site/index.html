@@ -17,42 +17,69 @@ input {
     margin-left: 10%;
     margin-right: 10%;
 }
-</style>  
+#student-info {
+    white-space: pre
+}
+#auth {
+    padding: 1em;
+    height: 5em;
+    background-color: red;
+}
+
+#auth-label, #auth-button {
+    font-style: bold;
+    font: 20px;
+    color: white;
+    margin: auto;
+}
+
+</style>
 </head>
 
   <body>
-    <nav class="navbar">          
+    <div class="input-group" id="auth">
+      <label class='inputlabel' id="auth-label">>>> You must authenticate <<<</label>
+      <input type="text" class="form-control" name="authcode" id="authcode" placeholder="">
+      <button class="btn btn-outline-secondary" id="auth-button">Submit</button>
+    </div>
+
+    <nav class="navbar">
       <h1 class="mx-auto navbar-brand">VandyHacks V Scanner Form</h1>
     </nav>
+
     <div class="container center-block" style="width: 50%;">
       <div class="row center-block">
         <div class="col">
-
-            <div class="input-group">
-                <label class='inputlabel'>Auth Code</label>
-                <input type="text" class="form-control" name="authcode" id="authcode" placeholder="">
-                <button class="btn btn-outline-secondary">Submit</button>
-            </div>
-            <br>
-            <div class="input-group">
-                <label class='inputlabel'>NFC code</label>
-                <input type="text" class="form-control" name="nfc" id="nfc" placeholder="">
-            </div>
-            <div class="input-group">
-                <label class='inputlabel'>Event Code</label>
-                <input type="text" class="form-control" name="eventcode" id="eventcode" placeholder="">
-                <datalist id="json-datalist"></datalist>
-                <button class="btn btn-outline-secondary">Submit</button>
-            </div>
-            <br>
+          <div>
+            <select class="custom-select" id="event-selector">
+                <option selected>Choose Event...</option>
+            </select>
+          </div>
+          <br>
+          <div class="input-group">
+            <label class='inputlabel'>Shortcode</label>
+            <input type="text" class="form-control" name="shortcode" id="shortcode" placeholder="">
+          </div>
+          <br>
+          <div class="input-group">
+            <label class='inputlabel'>NFC code</label>
+            <input type="text" class="form-control" name="nfc" id="nfc" placeholder="">
+            <datalist id="json-datalist"></datalist>
+            <button class="btn btn-outline-secondary">Submit</button>
+          </div>
+          <br>
+          <div id="student-info">
+            <!-- populated on load -->
+          </div>
+          <br>
         </div>
       </div>
     </div>
-    
-    <script src="index.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  
+
   </body>
 </html>
