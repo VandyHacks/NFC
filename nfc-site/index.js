@@ -14,6 +14,8 @@ const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
 const MOCK_USERS_URL = "https://api.myjson.com/bins/nn3dk"
 
 window.onload = e => {
+  $("#maindiv").hide();
+
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
   getEvents().then(events => {
     console.log(events);
@@ -126,9 +128,11 @@ function setToken() {
       tokenValid = true;
       window.localStorage.storedToken2 = token;
       $("#auth").remove()
+      $("#maindiv").show();
     } else {
       console.log("invalid");
       authError = "Invalid token";
+      alert(authError)
     }
   });
 }
