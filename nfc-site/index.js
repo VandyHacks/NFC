@@ -24,26 +24,7 @@ window.onload = e => {
     });
   });
 
-  // TODO(tim): real fetch users
-  // // 2. GET all users from USERS_URL (must have proper token)
-  // fetch(transformURL(USERS_URL), {
-  //   header: tokenHeader()
-  // })
-  //   .then(data => {
-  //     this.users = data;
-  //     console.log(this.users);
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-
-  // Mock fetch users
-  fetch(transformURL(MOCK_USERS_URL)).then(data => {
-    return data.json();
-  }).then(json => {
-    users = json;
-    console.log(users);
-  });
+  // NOTE: get users happens AFTER auth token submitted, below
 };
 
 // Displays user of corresponding shortcode
@@ -59,6 +40,7 @@ $("#auth-button").click(() => {
 });
 
 // TODO(tim): actually submit nfc-user pairs
+const PAIR_URL = `${API_URL}/users/:id/${id}`
 
 // TODO(tim): implement undo button
 
@@ -122,7 +104,8 @@ function setToken() {
     method: "POST",
     headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify({ token: token })
-  }).then(res => {
+  })
+  .then(res => {
     if (res.ok) {
       // scan();
       tokenValid = true;
@@ -134,5 +117,29 @@ function setToken() {
       authError = "Invalid token";
       alert(authError)
     }
+  })
+  .then(fetchUserData)
+  .catch(err => console.log(err))
+}
+
+function fetchUserData(){
+  // 2. GET all users from USERS_URL (must have proper token)
+  fetch(transformURL(USERS_URL), {
+    header: tokenHeader()
+    }).then(data => {
+      return data.json();
+    }).then(json => {
+      users = json;
+      console.log(users);
+    }).catch(err => {
+      console.log(err);
+    });
+
+  // Mock fetch users
+  fetch(transformURL(MOCK_USERS_URL)).then(data => {
+    return data.json();
+  }).then(json => {
+    users = json;
+    console.log(users);
   });
 }
