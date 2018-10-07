@@ -125,7 +125,7 @@ function setToken() {
 function fetchUserData(){
   // 2. GET all users from USERS_URL (must have proper token)
   fetch(transformURL(USERS_URL), {
-    header: tokenHeader()
+    headers: tokenHeader()
     }).then(data => {
       return data.json();
     }).then(json => {
