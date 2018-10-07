@@ -11,7 +11,6 @@ let EVENT_ID = ""; // eg. '5ba688091834080020e18db8';
 let EVENT_URL = `${API_URL}/events/`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
-const MOCK_USERS_URL = "https://api.myjson.com/bins/nn3dk"
 
 window.onload = e => {
   $("#maindiv").hide();
@@ -129,17 +128,9 @@ function fetchUserData(){
     }).then(data => {
       return data.json();
     }).then(json => {
-      users = json;
+      users = json.users;
       console.log(users);
     }).catch(err => {
       console.log(err);
     });
-
-  // Mock fetch users
-  fetch(transformURL(MOCK_USERS_URL)).then(data => {
-    return data.json();
-  }).then(json => {
-    users = json;
-    console.log(users);
-  });
 }
