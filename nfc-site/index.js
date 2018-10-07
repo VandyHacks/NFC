@@ -28,7 +28,7 @@ window.onload = e => {
 
 // Displays user of corresponding shortcode
 $("#shortcode").keyup(() => {
-  let match = users.filter(user => user.shortcode == $("#shortcode").val())
+  let match = users.filter(user => user.code == $("#shortcode").val())
   $("#student-info").html(JSON.stringify(match, null, 2).replace(/^\[|]$/g,""))
 });
 
@@ -42,6 +42,9 @@ $("#auth-button").click(() => {
 const PAIR_URL = `${API_URL}/users/:id/${id}`
 
 // TODO(tim): implement undo button
+
+// TODO (related to undo): have a list of past 5 or so accepted users, can undo any one of them?
+
 
 async function getEvents() {
   let response = await fetch(transformURL(EVENT_URL));
