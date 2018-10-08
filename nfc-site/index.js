@@ -73,7 +73,7 @@ async function getEvents() {
 
 let transformURL = url => {
   // if dev
-  if (!location.hostname.endsWith("apply.vandyhacks.org")) {
+  if (!location.hostname.endsWith("vandyhacks.org")) {
     // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
     // works by proxying client-side API call through a server (could host your own proxy as well)
     return "https://thingproxy.freeboard.io/fetch/" + url;
