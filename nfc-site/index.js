@@ -12,8 +12,8 @@ let EVENT_URL = `${API_URL}/events/`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
 
+$("#maindiv").hide();
 window.onload = e => {
-  $("#maindiv").hide();
 
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
   getEvents().then(events => {
