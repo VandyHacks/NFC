@@ -29,7 +29,24 @@ window.onload = e => {
 // Displays user of corresponding shortcode
 $("#shortcode").keyup(() => {
   let match = users.filter(user => user.code == $("#shortcode").val())
-  $("#student-info").html(JSON.stringify(match, null, 2).replace(/^\[|]$/g,""))
+  $("#student-info").html(JSON.stringify(match, null, '\t'))
+});
+
+// Displays user of corresponding shortcode
+$("#name").keyup(() => {
+  let criteria = user => {
+    const input = $("#name").val().toLowerCase()
+    for (let word of input.split(' ')) {
+      if (!word || word.length === 0)
+        continue
+      // if any word doesn't match, return false
+      if (!user.name.toLowerCase().includes(word))
+        return false;
+    }
+    return true; // is match
+  }
+  let matches = users.filter(criteria).slice(0, 5) // 4 max
+  $("#student-info").html(JSON.stringify(matches, null, '\t'))
 });
 
 // On auth code popup submit, set the token and call setToken()
@@ -109,7 +126,6 @@ function setToken() {
   })
   .then(res => {
     if (res.ok) {
-      // scan();
       tokenValid = true;
       window.localStorage.storedToken2 = token;
       $("#auth").remove()
@@ -128,11 +144,11 @@ function fetchUserData(){
   // 2. GET all users from USERS_URL (must have proper token)
   fetch(transformURL(USERS_URL), {
     headers: tokenHeader()
-    }).then(data => {
-      return data.json();
-    }).then(json => {
+    })
+    .then(data => data.json())
+    .then(json => {
       users = json.users;
-      console.log(users);
+      console.log(users)
     }).catch(err => {
       console.log(err);
     });
