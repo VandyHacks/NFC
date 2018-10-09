@@ -16,12 +16,16 @@ $("#maindiv").hide();
 window.onload = e => {
 
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
-  getEvents().then(events => {
+  getEvents()
+  .then(events => {
     console.log(events);
     $.each(events, function() {
       $("#event-selector").append($("<option />").val(this._id).text(this.name));
     });
-  });
+  })
+  .catch(err => {
+    console.log(err)
+  })
 
   // NOTE: get users happens AFTER auth token submitted, below
 };
@@ -58,7 +62,11 @@ $("#auth-button").click(() => {
 // TODO(tim): actually submit nfc-user pairs
 const PAIR_URL = `${API_URL}/users/:id/${id}`
 
+// TODO(tim): implement admit button
+// call admitAttendee(id, true)
+
 // TODO(tim): implement undo button
+// call unadmitAttendee(id, true)
 
 // TODO (related to undo): have a list of past 5 or so accepted users, can undo any one of them?
 
@@ -86,8 +94,13 @@ let transformURL = url => {
 This section below is pretty much copied from QR scan logic:
 See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 **********************************************************************/
-function admitAttendee(id) {
+
+// isNFC = true if id is NFC, else false (default)
+function admitAttendee(id, isNFC) {
   const ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
+  if (isNFC) {
+    UNADMIT_URL += '?type=nfc';
+  }
   fetch(ADMIT_URL, {
     headers: tokenHeader()
   }).then(res => {
@@ -96,8 +109,12 @@ function admitAttendee(id) {
   // returnToScan();
 }
 
-function unadmitAttendee(id) {
-  const UNADMIT_URL = `${EVENT_URL}/unadmit/${id}`; // to unadmit user by db id
+// isNFC = true if id is NFC, else false (default)
+function unadmitAttendee(id, isNFC) {
+  let UNADMIT_URL = `${EVENT_URL}/unadmit/${id}`; // to unadmit user by db id
+  if (isNFC) {
+    UNADMIT_URL += '?type=nfc';
+  }
   console.log("unadmit");
   fetch(UNADMIT_URL, {
     headers: tokenHeader()
