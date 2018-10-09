@@ -51,6 +51,9 @@ $("#name").keyup(() => {
   }
   let matches = users.filter(criteria).slice(0, 5) // 4 max
   $("#student-info").html(JSON.stringify(matches, null, '\t'))
+
+  // TODO: onsubmit, get ID of selected user, call admitAttendee(id, true)
+
 });
 
 // On auth code popup submit, set the token and call setToken()
@@ -62,8 +65,6 @@ $("#auth-button").click(() => {
 // TODO(tim): actually submit nfc-user pairs
 const PAIR_URL = `${API_URL}/users/:id/${id}`
 
-// TODO(tim): implement admit button
-// call admitAttendee(id, true)
 
 // TODO(tim): implement undo button
 // call unadmitAttendee(id, true)
@@ -97,9 +98,9 @@ See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 
 // isNFC = true if id is NFC, else false (default)
 function admitAttendee(id, isNFC) {
-  const ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
+  let ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
   if (isNFC) {
-    UNADMIT_URL += '?type=nfc';
+    ADMIT_URL += '?type=nfc';
   }
   fetch(ADMIT_URL, {
     headers: tokenHeader()
