@@ -64,7 +64,7 @@ function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 $("#event-selector").change(() => {
-  if ($("#event-selector").prop('selectedIndex') == 0) {
+  if ($("#event-selector").prop('selectedIndex') === 0) {
     $("#name").prop("disabled", true)
     $("#nfc").prop("disabled", true)
     EVENT_ID = ""
@@ -103,11 +103,11 @@ $("#name").keyup((e) => {
   let matches = users.filter(criteria).slice(0, 5) // 4 max
   $("#student-info").html(JSON.stringify(matches, null, '\t'))
 
-  if (matches.length == 1) {
+  if (matches.length === 1) {
     console.log(matches)
     id = matches[0].id
 
-    if (e.keyCode == 13 && EVENT_NAME != CHECK_IN_NAME) {
+    if (e.keyCode === 13 && EVENT_NAME !== CHECK_IN_NAME) {
       if ($("#unadmit-checkbox").prop("checked")) {
         unadmitAttendee(id, false);
       } else {
@@ -119,19 +119,21 @@ $("#name").keyup((e) => {
 
 // On nfc code submission
 $("#nfc").keyup((e) => {
-  if (e.keyCode == 13) {
-    let nfcCode = $("#nfc").val()
-    if (nfcCode.length == NFC_CODE_LENGTH) {
-      if (EVENT_NAME == CHECK_IN_NAME) {
-        console.log("trying to set pair")
-        setPair(nfcCode)
-      }
-      if ($("#unadmit-checkbox").prop("checked")) {
-        unadmitAttendee(nfcCode, true);
-      } else {
-        admitAttendee(nfcCode, true);
-      }
-    }
+  if (e.keyCode !== 13) {
+    return;
+  }
+  let nfcCode = $("#nfc").val()
+  if (nfcCode.length !== NFC_CODE_LENGTH) {
+    return;
+  }
+  if (EVENT_NAME === CHECK_IN_NAME) {
+    console.log("trying to set pair")
+    setPair(nfcCode)
+  }
+  if ($("#unadmit-checkbox").prop("checked")) {
+    unadmitAttendee(nfcCode, true);
+  } else {
+    admitAttendee(nfcCode, true);
   }
 });
 
@@ -235,7 +237,7 @@ function setToken() {
 
 // On auth code popup submit, set the token and call setToken()
 $("#authcode").keyup((e) => {
-  if (e.keyCode == 13) {
+  if (e.keyCode === 13) {
     token = $("#authcode").val()
     setToken()
   }
