@@ -1,9 +1,9 @@
 const dataList = document.getElementById("json-datalist");
 const input = document.getElementById("eventcode");
-let token = "";
-let id = "";
+let token = "";;
 let tokenValid = false;
 
+let id;
 let users;
 
 const API_URL = "https://apply.vandyhacks.org/api";
@@ -16,30 +16,67 @@ window.onload = e => {
   $("#maindiv").hide();
 
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
-  getEvents().then(events => {
-    console.log(events);
-    $.each(events, function() {
-      $("#event-selector").append($("<option />").val(this._id).text(this.name));
-    });
-  });
-
-  // NOTE: get users happens AFTER auth token submitted, below
+  setInterval(() => {
+    getEvents().then(events => {
+      console.log(events);
+      $("#event-selector").html("<option selected>Choose Event...</option>")
+      $.each(events, function() {
+        $("#event-selector").append($("<option />").val(this._id).text(this.name));
+      });
+    })}, 10000)
 };
 
 // Displays user of corresponding shortcode
+// TODO(tim): block input until users are loaded
 $("#shortcode").keyup(() => {
-  let match = users.filter(user => user.code == $("#shortcode").val())
-  $("#student-info").html(JSON.stringify(match, null, 2).replace(/^\[|]$/g,""))
+  if (users) {
+    let shortcode = $("#shortcode").val()
+    let match = users.filter(user => user.code == shortcode)
+    if (match.length == 1) {
+      $("#student-info").html(JSON.stringify(match[0], null, 2))
+      id = match[0].id
+      console.log(id)
+    } else if (match.length > 1) {
+      console.log("Somehow found two users with same shortcode: ", shortcode)
+    }
+  }
 });
 
 // On auth code popup submit, set the token and call setToken()
+$("#authcode").keyup((e) => {
+  if (e.keyCode == 13) {
+    token = $("#authcode").val()
+    setToken()
+  }
+});
 $("#auth-button").click(() => {
   token = $("#authcode").val()
   setToken()
 });
 
 // TODO(tim): actually submit nfc-user pairs
-const PAIR_URL = `${API_URL}/users/:id/${id}`
+$("#nfc").keyup((e) => {
+  if (e.keyCode == 13) {
+    console.log("trying to set pair")
+    setPair($("#nfc").val())
+  }
+});
+
+// const PAIR_URL = `${API_URL}/users/:id/${id}`
+// const PAIR_URL = `${API_URL}/users/${id}/NFC`
+
+function setPair(nfc) {
+  console.log(id)
+  console.log(nfc)
+  console.log(token)
+  fetch(transformURL(`${API_URL}/users/${id}/NFC`), {
+    method: "PUT",
+    headers: new Headers({"x-event-secret": token, "Content-Type": "application/json"}),
+    body: JSON.stringify({code: nfc})
+  }).then(res => res.json())
+  .then(json => console.log(JSON.stringify(json)))
+  .catch(err => {console.log(err)})
+}
 
 // TODO(tim): implement undo button
 
