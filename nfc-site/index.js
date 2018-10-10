@@ -153,7 +153,7 @@ See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 
 // isNFC = true if id is NFC, else false (default)
 function admitAttendee(id, isNFC) {
-  let ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
+  let ADMIT_URL = `${EVENT_URL}/${EVENT_ID}/admit/${id}`; // to admit user by db id
   if (isNFC) {
     ADMIT_URL += '?type=nfc';
   }
@@ -169,7 +169,7 @@ function admitAttendee(id, isNFC) {
 
 // isNFC = true if id is NFC, else false (default)
 function unadmitAttendee(id, isNFC) {
-  let UNADMIT_URL = `${EVENT_URL}/unadmit/${id}`; // to unadmit user by db id
+  let UNADMIT_URL = `${EVENT_URL}/${EVENT_ID}/unadmit/${id}`; // to unadmit user by db id
   if (isNFC) {
     UNADMIT_URL += '?type=nfc';
   }
