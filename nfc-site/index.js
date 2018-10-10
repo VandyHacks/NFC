@@ -48,6 +48,10 @@ function fetchUserData(){
     .then(data => data.json())
     .then(json => {
       users = json.users;
+      if (EVENT_ID) {
+        $("#name").prop("disabled", false)
+        $("#nfc").prop("disabled", false)
+      }
       console.log(users)
     }).catch(err => {
       console.log(err);
@@ -57,14 +61,26 @@ function fetchUserData(){
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 $("#event-selector").change(() => {
+    if ($("#event-selector").prop('selectedIndex') == 0) {
+      $("#name").prop("disabled", true)
+      $("#nfc").prop("disabled", true)
+      EVENT_ID = ""
+      EVENT_NAME = ""
+      return
+    }
+
     // have to subtract 1 to account for default choice (Choose event...)
     EVENT_ID = events[$("#event-selector").prop('selectedIndex') - 1]._id
     EVENT_NAME = events[$("#event-selector").prop('selectedIndex') - 1].name
     console.log("selected event id: ", EVENT_ID)
     console.log("selected event name: ", EVENT_NAME)
+
+    if (users) {
+      $("#name").prop("disabled", false)
+      $("#nfc").prop("disabled", false)
+    }
 });
 
-// TODO:Block input until users are loaded
 // Displays user of corresponding fuzz match
 $("#name").keyup((e) => {
   let criteria = user => {
@@ -73,7 +89,10 @@ $("#name").keyup((e) => {
       if (!word || word.length === 0)
         continue
       // if any word doesn't match, return false
-      if (!user.name.toLowerCase().includes(word))
+
+      if (!user.name.toLowerCase().includes(word) &&
+          !user.email.toLowerCase().includes(word) &&
+          !user.school.toLowerCase().includes(word))
         return false;
     }
     return true; // is match
@@ -86,7 +105,11 @@ $("#name").keyup((e) => {
     id = matches[0].id
 
     if (e.keyCode == 13 && EVENT_NAME != CHECK_IN_NAME) {
-      admitAttendee(id, false)
+      if ($("#unadmit-checkbox").prop("checked")) {
+        unadmitAttendee(id, false);
+      } else {
+        admitAttendee(id, false);
+      }
     }
   }
 });
@@ -100,7 +123,11 @@ $("#nfc").keyup((e) => {
         console.log("trying to set pair")
         setPair(nfcCode)
       }
-      admitAttendee(nfcCode, true);
+      if ($("#unadmit-checkbox").prop("checked")) {
+        unadmitAttendee(nfcCode, true);
+      } else {
+        admitAttendee(nfcCode, true);
+      }
     }
   }
 });
@@ -119,10 +146,6 @@ function setPair(nfc) {
   .catch(err => {console.log(err)})
 }
 
-// TODO(tim): implement undo button
-// call unadmitAttendee(id, true)
-// TODO (related to undo): have a list of past 5 or so accepted users, can undo any one of them?
-
 /**********************************************************************
 This section below is pretty much copied from QR scan logic:
 See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
@@ -138,6 +161,7 @@ function admitAttendee(id, isNFC) {
     headers: tokenHeader()
   }).then(res => {
     // res = { headers: "admitted" };
+    console.log("admitted")
     console.log(res)
   });
   // returnToScan();
@@ -149,11 +173,11 @@ function unadmitAttendee(id, isNFC) {
   if (isNFC) {
     UNADMIT_URL += '?type=nfc';
   }
-  console.log("unadmit");
   fetch(transformURL(UNADMIT_URL), {
     headers: tokenHeader()
   }).then(res => {
     // res = { headers: "unadmitted" };
+    console.log("unadmitted")
     console.log(res)
   });
   // returnToScan();
