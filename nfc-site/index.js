@@ -5,38 +5,68 @@ let tokenValid = false;
 
 let id;
 let users;
+let events;
 
 const API_URL = "https://apply.vandyhacks.org/api";
 let EVENT_ID = ""; // eg. '5ba688091834080020e18db8';
-let EVENT_URL = `${API_URL}/events/`;
+let EVENT_NAME = ""
+let EVENT_URL = `${API_URL}/events`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
+const CHECK_IN_NAME = "test-check-in";
+const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 
+/**************************************************************************************************/
+/******************** Functions to get users and events *******************************************/
 $("#maindiv").hide();
 window.onload = e => {
-
-  // 1. get list of all events (TODO: needs to happen periodically via setInterval)
   setInterval(() => {
-    getEvents().then(events => {
-      console.log(events);
-      $("#event-selector").html("<option selected>Choose Event...</option>")
-      $.each(events, function() {
-        $("#event-selector").append($("<option />").val(this._id).text(this.name));
-      });
-    }).catch(err => {
-      console.log(err)
-    })}, 10000)
+    getEvents().catch(err => { console.log(err)})
+  }, 10000)
 };
 
-// Displays user of corresponding shortcode
-// TODO(tim): block input until users are loaded
-$("#shortcode").keyup(() => {
-  let match = users.filter(user => user.code == $("#shortcode").val())
-  $("#student-info").html(JSON.stringify(match, null, '\t'))
+async function getEvents() {
+  let response = await fetch(transformURL(EVENT_URL));
+  let json = await response.json();
+  // filter only open events
+  json = json.filter(e => e.open);
+  if (JSON.stringify(events) != JSON.stringify(json)) {
+    console.log("old events: ", events)
+    console.log("new events: ", json)
+    events = json
+    $("#event-selector").html("<option selected>Choose Event...</option>")
+    $.each(events, function() {
+      $("#event-selector").append($("<option />").val(this._id).text(this.name));
+    });
+  }
+}
+
+function fetchUserData(){
+  fetch(transformURL(USERS_URL), {
+    headers: tokenHeader()
+    })
+    .then(data => data.json())
+    .then(json => {
+      users = json.users;
+      console.log(users)
+    }).catch(err => {
+      console.log(err);
+    });
+}
+
+/**************************************************************************************************/
+/***************************************** Handle interactions ************************************/
+$("#event-selector").change(() => {
+    // have to subtract 1 to account for default choice (Choose event...)
+    EVENT_ID = events[$("#event-selector").prop('selectedIndex') - 1]._id
+    EVENT_NAME = events[$("#event-selector").prop('selectedIndex') - 1].name
+    console.log("selected event id: ", EVENT_ID)
+    console.log("selected event name: ", EVENT_NAME)
 });
 
+// TODO:Block input until users are loaded
 // Displays user of corresponding fuzz match
-$("#name").keyup(() => {
+$("#name").keyup((e) => {
   let criteria = user => {
     const input = $("#name").val().toLowerCase()
     for (let word of input.split(' ')) {
@@ -51,38 +81,36 @@ $("#name").keyup(() => {
   let matches = users.filter(criteria).slice(0, 5) // 4 max
   $("#student-info").html(JSON.stringify(matches, null, '\t'))
 
-  // TODO: onsubmit, get ID of selected user, call admitAttendee(id, true)
+  if (matches.length == 1) {
+    console.log(matches)
+    id = matches[0].id
 
-});
-
-// On auth code popup submit, set the token and call setToken()
-$("#authcode").keyup((e) => {
-  if (e.keyCode == 13) {
-    token = $("#authcode").val()
-    setToken()
+    if (e.keyCode == 13 && EVENT_NAME != CHECK_IN_NAME) {
+      admitAttendee(id, false)
+    }
   }
 });
-$("#auth-button").click(() => {
-  token = $("#authcode").val()
-  setToken()
-});
 
-// TODO(tim): actually submit nfc-user pairs
+// On nfc code submission
 $("#nfc").keyup((e) => {
   if (e.keyCode == 13) {
-    console.log("trying to set pair")
-    setPair($("#nfc").val())
+    let nfcCode = $("#nfc").val()
+    if (nfcCode.length == NFC_CODE_LENGTH) {
+      if (EVENT_NAME == CHECK_IN_NAME) {
+        console.log("trying to set pair")
+        setPair(nfcCode)
+      }
+      admitAttendee(nfcCode, true);
+    }
   }
 });
-
-// const PAIR_URL = `${API_URL}/users/:id/${id}`
-// const PAIR_URL = `${API_URL}/users/${id}/NFC`
 
 function setPair(nfc) {
   console.log(id)
   console.log(nfc)
   console.log(token)
-  fetch(transformURL(`${API_URL}/users/${id}/NFC`), {
+  const PAIR_URL = `${API_URL}/users/${id}/NFC`
+  fetch(transformURL(PAIR_URL), {
     method: "PUT",
     headers: new Headers({"x-event-secret": token, "Content-Type": "application/json"}),
     body: JSON.stringify({code: nfc})
@@ -91,31 +119,9 @@ function setPair(nfc) {
   .catch(err => {console.log(err)})
 }
 
-
 // TODO(tim): implement undo button
 // call unadmitAttendee(id, true)
-
 // TODO (related to undo): have a list of past 5 or so accepted users, can undo any one of them?
-
-
-async function getEvents() {
-  let response = await fetch(transformURL(EVENT_URL));
-  let events = await response.json();
-  // filter only open events
-  events = events.filter(e => e.open);
-  return events;
-}
-
-let transformURL = url => {
-  // if dev
-  if (!location.hostname.endsWith("vandyhacks.org")) {
-    // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
-    // works by proxying client-side API call through a server (could host your own proxy as well)
-    return "https://thingproxy.freeboard.io/fetch/" + url;
-  }
-  // if prod
-  return url;
-};
 
 /**********************************************************************
 This section below is pretty much copied from QR scan logic:
@@ -128,10 +134,11 @@ function admitAttendee(id, isNFC) {
   if (isNFC) {
     ADMIT_URL += '?type=nfc';
   }
-  fetch(ADMIT_URL, {
+  fetch(transformURL(ADMIT_URL), {
     headers: tokenHeader()
   }).then(res => {
-    res = { headers: "admitted" };
+    // res = { headers: "admitted" };
+    console.log(res)
   });
   // returnToScan();
 }
@@ -143,13 +150,17 @@ function unadmitAttendee(id, isNFC) {
     UNADMIT_URL += '?type=nfc';
   }
   console.log("unadmit");
-  fetch(UNADMIT_URL, {
+  fetch(transformURL(UNADMIT_URL), {
     headers: tokenHeader()
   }).then(res => {
-    res = { headers: "unadmitted" };
+    // res = { headers: "unadmitted" };
+    console.log(res)
   });
   // returnToScan();
 }
+
+/**************************************************************************************************/
+/*********************************** Authorization stuff ******************************************/
 
 // constructs a HTTP header with JWT token to authorize GET requests
 function tokenHeader() {
@@ -184,16 +195,27 @@ function setToken() {
   .catch(err => console.log(err))
 }
 
-function fetchUserData(){
-  // 2. GET all users from USERS_URL (must have proper token)
-  fetch(transformURL(USERS_URL), {
-    headers: tokenHeader()
-    })
-    .then(data => data.json())
-    .then(json => {
-      users = json.users;
-      console.log(users)
-    }).catch(err => {
-      console.log(err);
-    });
-}
+// On auth code popup submit, set the token and call setToken()
+$("#authcode").keyup((e) => {
+  if (e.keyCode == 13) {
+    token = $("#authcode").val()
+    setToken()
+  }
+});
+$("#auth-button").click(() => {
+  token = $("#authcode").val()
+  setToken()
+});
+
+/**************************************************************************************************/
+/****************************************** Utils *************************************************/
+let transformURL = url => {
+  // if dev
+  if (!location.hostname.endsWith("vandyhacks.org")) {
+    // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
+    // works by proxying client-side API call through a server (could host your own proxy as well)
+    return "https://thingproxy.freeboard.io/fetch/" + url;
+  }
+  // if prod
+  return url;
+};
