@@ -21,29 +21,32 @@ const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 $("#maindiv").hide();
 window.onload = e => {
   setInterval(() => {
-    getEvents().catch(err => { console.log(err)})
+    getEvents().catch(err => {
+      console.log(err)
+    })
   }, 30000)
 };
 
 async function getEvents() {
-  let response = await fetch(transformURL(EVENT_URL));
+  const response = await fetch(transformURL(EVENT_URL));
   let json = await response.json();
   // filter only open events
   json = json.filter(e => e.open);
-  if (JSON.stringify(events) != JSON.stringify(json)) {
-    console.log("old events: ", events)
-    console.log("new events: ", json)
-    events = json
-    $("#event-selector").html("<option selected>Choose Event...</option>")
-    $.each(events, function() {
-      $("#event-selector").append($("<option />").val(this._id).text(this.name));
-    });
+  if (JSON.stringify(events) === JSON.stringify(json)) {
+    return;
   }
+  console.log("old events: ", events)
+  console.log("new events: ", json)
+  events = json
+  $("#event-selector").html("<option selected>Choose Event...</option>")
+  $.each(events, function () {
+    $("#event-selector").append($("<option />").val(this._id).text(this.name));
+  });
 }
 
-function fetchUserData(){
+function fetchUserData() {
   fetch(transformURL(USERS_URL), {
-    headers: tokenHeader()
+      headers: tokenHeader()
     })
     .then(data => data.json())
     .then(json => {
@@ -61,24 +64,24 @@ function fetchUserData(){
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 $("#event-selector").change(() => {
-    if ($("#event-selector").prop('selectedIndex') == 0) {
-      $("#name").prop("disabled", true)
-      $("#nfc").prop("disabled", true)
-      EVENT_ID = ""
-      EVENT_NAME = ""
-      return
-    }
+  if ($("#event-selector").prop('selectedIndex') == 0) {
+    $("#name").prop("disabled", true)
+    $("#nfc").prop("disabled", true)
+    EVENT_ID = ""
+    EVENT_NAME = ""
+    return
+  }
 
-    // have to subtract 1 to account for default choice (Choose event...)
-    EVENT_ID = events[$("#event-selector").prop('selectedIndex') - 1]._id
-    EVENT_NAME = events[$("#event-selector").prop('selectedIndex') - 1].name
-    console.log("selected event id: ", EVENT_ID)
-    console.log("selected event name: ", EVENT_NAME)
+  // have to subtract 1 to account for default choice (Choose event...)
+  EVENT_ID = events[$("#event-selector").prop('selectedIndex') - 1]._id
+  EVENT_NAME = events[$("#event-selector").prop('selectedIndex') - 1].name
+  console.log("selected event id: ", EVENT_ID)
+  console.log("selected event name: ", EVENT_NAME)
 
-    if (users) {
-      $("#name").prop("disabled", false)
-      $("#nfc").prop("disabled", false)
-    }
+  if (users) {
+    $("#name").prop("disabled", false)
+    $("#nfc").prop("disabled", false)
+  }
 });
 
 // Displays user of corresponding fuzz match
@@ -91,8 +94,8 @@ $("#name").keyup((e) => {
       // if any word doesn't match, return false
 
       if (!user.name.toLowerCase().includes(word) &&
-          !user.email.toLowerCase().includes(word) &&
-          !user.school.toLowerCase().includes(word))
+        !user.email.toLowerCase().includes(word) &&
+        !user.school.toLowerCase().includes(word))
         return false;
     }
     return true; // is match
@@ -138,12 +141,19 @@ function setPair(nfc) {
   console.log(token)
   const PAIR_URL = `${API_URL}/users/${id}/NFC`
   fetch(transformURL(PAIR_URL), {
-    method: "PUT",
-    headers: new Headers({"x-event-secret": token, "Content-Type": "application/json"}),
-    body: JSON.stringify({code: nfc})
-  }).then(res => res.json())
-  .then(json => console.log(JSON.stringify(json)))
-  .catch(err => {console.log(err)})
+      method: "PUT",
+      headers: new Headers({
+        "x-event-secret": token,
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify({
+        code: nfc
+      })
+    }).then(res => res.json())
+    .then(json => console.log(JSON.stringify(json)))
+    .catch(err => {
+      console.log(err)
+    })
 }
 
 /**********************************************************************
@@ -199,24 +209,28 @@ function setToken() {
   console.log(token);
   console.log("pls");
   fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
-    method: "POST",
-    headers: new Headers({ "Content-Type": "application/json" }),
-    body: JSON.stringify({ token: token })
-  })
-  .then(res => {
-    if (res.ok) {
-      tokenValid = true;
-      window.localStorage.storedToken2 = token;
-      $("#auth").remove()
-      $("#maindiv").show();
-    } else {
-      console.log("invalid");
-      authError = "Invalid token";
-      alert(authError)
-    }
-  })
-  .then(fetchUserData)
-  .catch(err => console.log(err))
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify({
+        token: token
+      })
+    })
+    .then(res => {
+      if (res.ok) {
+        tokenValid = true;
+        window.localStorage.storedToken2 = token;
+        $("#auth").remove()
+        $("#maindiv").show();
+      } else {
+        console.log("invalid");
+        authError = "Invalid token";
+        alert(authError)
+      }
+    })
+    .then(fetchUserData)
+    .catch(err => console.log(err))
 }
 
 // On auth code popup submit, set the token and call setToken()
