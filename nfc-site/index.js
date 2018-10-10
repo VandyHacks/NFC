@@ -12,8 +12,8 @@ let EVENT_URL = `${API_URL}/events/`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
 
+$("#maindiv").hide();
 window.onload = e => {
-  $("#maindiv").hide();
 
   // 1. get list of all events (TODO: needs to happen periodically via setInterval)
   setInterval(() => {
@@ -23,23 +23,36 @@ window.onload = e => {
       $.each(events, function() {
         $("#event-selector").append($("<option />").val(this._id).text(this.name));
       });
+    }).catch(err => {
+      console.log(err)
     })}, 10000)
 };
 
 // Displays user of corresponding shortcode
 // TODO(tim): block input until users are loaded
 $("#shortcode").keyup(() => {
-  if (users) {
-    let shortcode = $("#shortcode").val()
-    let match = users.filter(user => user.code == shortcode)
-    if (match.length == 1) {
-      $("#student-info").html(JSON.stringify(match[0], null, 2))
-      id = match[0].id
-      console.log(id)
-    } else if (match.length > 1) {
-      console.log("Somehow found two users with same shortcode: ", shortcode)
+  let match = users.filter(user => user.code == $("#shortcode").val())
+  $("#student-info").html(JSON.stringify(match, null, '\t'))
+});
+
+// Displays user of corresponding fuzz match
+$("#name").keyup(() => {
+  let criteria = user => {
+    const input = $("#name").val().toLowerCase()
+    for (let word of input.split(' ')) {
+      if (!word || word.length === 0)
+        continue
+      // if any word doesn't match, return false
+      if (!user.name.toLowerCase().includes(word))
+        return false;
     }
+    return true; // is match
   }
+  let matches = users.filter(criteria).slice(0, 5) // 4 max
+  $("#student-info").html(JSON.stringify(matches, null, '\t'))
+
+  // TODO: onsubmit, get ID of selected user, call admitAttendee(id, true)
+
 });
 
 // On auth code popup submit, set the token and call setToken()
@@ -78,7 +91,9 @@ function setPair(nfc) {
   .catch(err => {console.log(err)})
 }
 
+
 // TODO(tim): implement undo button
+// call unadmitAttendee(id, true)
 
 // TODO (related to undo): have a list of past 5 or so accepted users, can undo any one of them?
 
@@ -93,7 +108,7 @@ async function getEvents() {
 
 let transformURL = url => {
   // if dev
-  if (!location.hostname.endsWith("apply.vandyhacks.org")) {
+  if (!location.hostname.endsWith("vandyhacks.org")) {
     // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
     // works by proxying client-side API call through a server (could host your own proxy as well)
     return "https://thingproxy.freeboard.io/fetch/" + url;
@@ -106,8 +121,13 @@ let transformURL = url => {
 This section below is pretty much copied from QR scan logic:
 See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
 **********************************************************************/
-function admitAttendee(id) {
-  const ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
+
+// isNFC = true if id is NFC, else false (default)
+function admitAttendee(id, isNFC) {
+  let ADMIT_URL = `${EVENT_URL}/admit/${id}`; // to admit user by db id
+  if (isNFC) {
+    ADMIT_URL += '?type=nfc';
+  }
   fetch(ADMIT_URL, {
     headers: tokenHeader()
   }).then(res => {
@@ -116,8 +136,12 @@ function admitAttendee(id) {
   // returnToScan();
 }
 
-function unadmitAttendee(id) {
-  const UNADMIT_URL = `${EVENT_URL}/unadmit/${id}`; // to unadmit user by db id
+// isNFC = true if id is NFC, else false (default)
+function unadmitAttendee(id, isNFC) {
+  let UNADMIT_URL = `${EVENT_URL}/unadmit/${id}`; // to unadmit user by db id
+  if (isNFC) {
+    UNADMIT_URL += '?type=nfc';
+  }
   console.log("unadmit");
   fetch(UNADMIT_URL, {
     headers: tokenHeader()
@@ -146,7 +170,6 @@ function setToken() {
   })
   .then(res => {
     if (res.ok) {
-      // scan();
       tokenValid = true;
       window.localStorage.storedToken2 = token;
       $("#auth").remove()
@@ -165,11 +188,11 @@ function fetchUserData(){
   // 2. GET all users from USERS_URL (must have proper token)
   fetch(transformURL(USERS_URL), {
     headers: tokenHeader()
-    }).then(data => {
-      return data.json();
-    }).then(json => {
+    })
+    .then(data => data.json())
+    .then(json => {
       users = json.users;
-      console.log(users);
+      console.log(users)
     }).catch(err => {
       console.log(err);
     });
