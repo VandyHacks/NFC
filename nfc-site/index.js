@@ -22,7 +22,7 @@ $("#maindiv").hide();
 window.onload = e => {
   setInterval(() => {
     getEvents().catch(err => { console.log(err)})
-  }, 10000)
+  }, 30000)
 };
 
 async function getEvents() {
