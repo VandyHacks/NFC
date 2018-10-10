@@ -25,6 +25,11 @@ window.onload = e => {
       console.log(err)
     })
   }, 30000)
+
+  // for inital load:
+  getEvents().catch(err => {
+    console.log(err)
+  })
 };
 
 async function getEvents() {
