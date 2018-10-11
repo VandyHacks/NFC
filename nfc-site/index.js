@@ -47,6 +47,11 @@ async function getEvents() {
   $.each(events, function () {
     $("#event-selector").append($("<option />").val(this._id).text(this.name));
   });
+
+  $("#name").prop("disabled", true)
+  $("#nfc").prop("disabled", true)
+  EVENT_ID = ""
+  EVENT_NAME = ""
 }
 
 function fetchUserData() {
