@@ -132,9 +132,15 @@ $("#nfc").keyup((e) => {
     return;
   }
   if (EVENT_NAME === CHECK_IN_NAME) {
-    console.log("trying to set pair")
-    setPair(nfcCode)
+    // during check-in, pair + admit into "check-in" event
+    return setPair(nfcCode)
+      .then(()=> {
+        console.log("Paired successfully.")
+        admitAttendee(nfcCode, true)
+      })
+      .catch(err => console.log(err));
   }
+  // else if not check-in event:
   if ($("#unadmit-checkbox").prop("checked")) {
     unadmitAttendee(nfcCode, true);
   } else {
@@ -147,7 +153,7 @@ function setPair(nfc) {
   console.log(nfc)
   console.log(token)
   const PAIR_URL = `${API_URL}/users/${id}/NFC`
-  fetch(transformURL(PAIR_URL), {
+  return fetch(transformURL(PAIR_URL), {
       method: "PUT",
       headers: new Headers({
         "x-event-secret": token,
