@@ -128,11 +128,15 @@ $("#name").keyup((e) => {
   let matches = users.filter(criteria).slice(0, 5) // 4 max
   $("#student-info").html(JSON.stringify(matches, null, '\t'))
 
-  if (matches.length === 1) {
+  if (matches.length !== 1) {
+    return;
+  }
     console.log(matches)
     id = matches[0].id
 
-    if (e.keyCode === 13) {
+    if (e.keyCode !== 13) {
+      return;
+    }
       if (EVENT_NAME !== CHECK_IN_NAME) {
         if ($("#unadmit-checkbox").prop("checked")) {
           unadmitAttendee(id, false);
@@ -142,8 +146,6 @@ $("#name").keyup((e) => {
       } else {
         $("#nfc").focus()
       }
-    }
-  }
 });
 
 // On nfc code submission
@@ -159,8 +161,7 @@ $("#nfc").keyup((e) => {
     // during check-in, pair + admit into "check-in" event
     return setPair(nfcCode)
       .then(()=> {
-        $("#name").val("")
-        $("#nfc").val("")
+        clearInputs();
         $("#name").focus()
         console.log("Paired successfully.")
         admitAttendee(nfcCode, true)
@@ -210,13 +211,10 @@ function admitAttendee(id, isNFC) {
   fetch(transformURL(ADMIT_URL), {
     headers: tokenHeader()
   }).then(res => {
-    // res = { headers: "admitted" };
-    $("#name").val("")
-    $("#nfc").val("")
+    clearInputs();
     console.log("admitted")
     console.log(res)
   });
-  // returnToScan();
 }
 
 // isNFC = true if id is NFC, else false (default)
@@ -228,13 +226,10 @@ function unadmitAttendee(id, isNFC) {
   fetch(transformURL(UNADMIT_URL), {
     headers: tokenHeader()
   }).then(res => {
-    // res = { headers: "unadmitted" };
-    $("#name").val("")
-    $("#nfc").val("")
+    clearInputs();
     console.log("unadmitted")
     console.log(res)
   });
-  // returnToScan();
 }
 
 /**************************************************************************************************/
@@ -301,3 +296,8 @@ let transformURL = url => {
   // if prod
   return url;
 };
+
+function clearInputs() {
+  $("#name").val("")
+  $("#nfc").val("")
+}
