@@ -1,18 +1,12 @@
-const dataList = document.getElementById("json-datalist");
-const input = document.getElementById("eventcode");
 let token = "";
-let tokenValid = false;
-
 let id;
 let users;
 let events;
+let EVENT_ID = "";
+let EVENT_NAME = "";
 
 const API_URL = "https://apply.vandyhacks.org/api";
-let EVENT_ID = ""; // eg. '5ba688091834080020e18db8';
-let EVENT_NAME = "";
-let EVENT_URL = `${API_URL}/events`;
-
-const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
+const EVENT_URL = `${API_URL}/events`;
 const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 
 // main initial load
@@ -63,6 +57,7 @@ async function getEvents() {
 }
 
 function fetchUserData() {
+  const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
   fetch(transformURL(USERS_URL), {
     headers: tokenHeader()
   })
@@ -244,7 +239,6 @@ function setToken() {
   })
     .then(res => {
       if (res.ok) {
-        tokenValid = true;
         window.localStorage.storedToken2 = token;
         $("#auth").remove();
         $("#maindiv").show();
