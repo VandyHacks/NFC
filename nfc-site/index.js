@@ -176,7 +176,7 @@ $("#nfc").on('keyup', e => {
 
 function setPair(nfc) {
   if (!id){
-    return Promise.reject('No id found.');
+    return Promise.reject('Unable to pair: no user id found.');
   }
   console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
