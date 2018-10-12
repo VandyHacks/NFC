@@ -51,8 +51,7 @@ async function getEvents() {
     $("#event-selector").append($("<option />").val(this._id).text(this.name));
   });
 
-  $("#name").prop("disabled", true)
-  $("#nfc").prop("disabled", true)
+  setInputDisable(true);
   EVENT_ID = ""
   EVENT_NAME = ""
 }
@@ -65,8 +64,7 @@ function fetchUserData() {
     .then(json => {
       users = json.users;
       if (EVENT_ID) {
-        $("#name").prop("disabled", false)
-        $("#nfc").prop("disabled", false)
+        setInputDisable(false)
       }
 
       if (EVENT_NAME === CHECK_IN_NAME) {
@@ -84,8 +82,7 @@ function fetchUserData() {
 /***************************************** Handle interactions ************************************/
 $("#event-selector").change(() => {
   if ($("#event-selector").prop('selectedIndex') === 0) {
-    $("#name").prop("disabled", true)
-    $("#nfc").prop("disabled", true)
+    setInputDisable(true)
     EVENT_ID = ""
     EVENT_NAME = ""
     return
@@ -98,8 +95,7 @@ $("#event-selector").change(() => {
   console.log("selected event name: ", EVENT_NAME)
 
   if (users) {
-    $("#name").prop("disabled", false)
-    $("#nfc").prop("disabled", false)
+    setInputDisable(false)
   }
 
   if (EVENT_NAME === CHECK_IN_NAME) {
@@ -297,7 +293,14 @@ let transformURL = url => {
   return url;
 };
 
+// clears input fields
 function clearInputs() {
   $("#name").val("")
   $("#nfc").val("")
+}
+
+// toggles disabling input
+function setInputDisable(disable) {
+  $("#name").prop("disabled", disable)
+  $("#nfc").prop("disabled", disable)
 }
