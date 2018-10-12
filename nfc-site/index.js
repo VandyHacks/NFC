@@ -107,11 +107,14 @@ $("#event-selector").change(() => {
 
 // Displays user of corresponding fuzz match
 $("#name").keyup(e => {
+  id = undefined; // reset id
+  const INPUT = $("#name").val().toLowerCase();
+  if(INPUT.length === 0){
+    $("#student-info").html("");
+    return;
+  }
   let criteria = user => {
-    const input = $("#name")
-      .val()
-      .toLowerCase();
-    for (let word of input.split(" ")) {
+    for (let word of INPUT.split(" ")) {
       if (!word || word.length === 0) continue;
       // if any word doesn't match, return false
 
@@ -131,12 +134,13 @@ $("#name").keyup(e => {
   if (matches.length === 0) {
     return;
   }
-  console.log(matches);
+  
   id = matches[0].id; // takes first match
-
   if (e.keyCode !== 13) {
     return;
   }
+  console.log(matches);
+
   if (EVENT_NAME !== CHECK_IN_NAME) {
     const admit = !($("#unadmit-checkbox").prop("checked"));
     setAdmitAttendee(id, false, admit);
