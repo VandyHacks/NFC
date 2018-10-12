@@ -92,9 +92,9 @@ $("#event-selector").on('change', () => {
 
   // initializes focus for new event
   if (isCheckIn()) {
-    $("#name").trigger("focus");
+    $("#name")[0].focus();
   } else {
-    $("#nfc").trigger("focus");
+    $("#nfc")[0].focus();
   }
 });
 
@@ -140,7 +140,7 @@ $("#name").on('keyup', e => {
     const admit = !($("#unadmit-checkbox").prop("checked"));
     setAdmitAttendee(id, false, admit);
   } else {
-    $("#nfc").trigger("focus"); // during check-in: pressing enter on name focuses to nfc
+    $("#nfc")[0].focus(); // during check-in: pressing enter on name focuses to nfc
   }
 });
 
@@ -158,10 +158,9 @@ $("#nfc").on('keyup', e => {
     return setPair(nfcCode)
       .then(() => {
         console.log("Paired successfully.");
-        setAdmitAttendee(nfcCode, true, true);
-
-        $("#name").trigger("focus"); // during check-in: switch focus back to name for next submission
         clearInputs();
+        $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
+        setAdmitAttendee(nfcCode, true, true);
       })
       .catch(err => console.error(err));
   }
