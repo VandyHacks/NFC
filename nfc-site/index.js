@@ -128,7 +128,7 @@ $("#name").keyup(e => {
   const matches_condensed = matches.map(e => ({...e, id: undefined}));
   $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
 
-  if (matches.length !== 1) {
+  if (matches.length === 0) {
     return;
   }
   console.log(matches);
@@ -227,7 +227,6 @@ function tokenHeader() {
 // set auth JWT token
 function setToken() {
   console.log(token);
-  console.log("pls");
   fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
     method: "POST",
     headers: new Headers({
@@ -245,8 +244,7 @@ function setToken() {
         $("#maindiv").show();
       } else {
         console.log("invalid");
-        authError = "Invalid token";
-        alert(authError);
+        alert("Invalid token");
       }
     })
     .then(fetchUserData)
