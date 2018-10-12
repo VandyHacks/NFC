@@ -36,7 +36,10 @@ async function getEvents() {
   const response = await fetch(transformURL(EVENT_URL));
   let json = await response.json();
   // filter only open events
-  json = json.filter(e => e.open);
+  json = json.filter(e => e.open).map(event => {
+    delete event.attendees
+    return event
+  })
   if (JSON.stringify(events) === JSON.stringify(json)) {
     return;
   }
@@ -65,6 +68,12 @@ function fetchUserData() {
         $("#name").prop("disabled", false)
         $("#nfc").prop("disabled", false)
       }
+
+      if (EVENT_NAME === CHECK_IN_NAME) {
+        $("#name").focus()
+      } else {
+        $("#nfc").focus()
+      }
       console.log(users)
     }).catch(err => {
       console.log(err);
@@ -92,6 +101,12 @@ $("#event-selector").change(() => {
     $("#name").prop("disabled", false)
     $("#nfc").prop("disabled", false)
   }
+
+  if (EVENT_NAME === CHECK_IN_NAME) {
+    $("#name").focus()
+  } else {
+    $("#nfc").focus()
+  }
 });
 
 // Displays user of corresponding fuzz match
@@ -117,11 +132,15 @@ $("#name").keyup((e) => {
     console.log(matches)
     id = matches[0].id
 
-    if (e.keyCode === 13 && EVENT_NAME !== CHECK_IN_NAME) {
-      if ($("#unadmit-checkbox").prop("checked")) {
-        unadmitAttendee(id, false);
+    if (e.keyCode === 13) {
+      if (EVENT_NAME !== CHECK_IN_NAME) {
+        if ($("#unadmit-checkbox").prop("checked")) {
+          unadmitAttendee(id, false);
+        } else {
+          admitAttendee(id, false);
+        }
       } else {
-        admitAttendee(id, false);
+        $("#nfc").focus()
       }
     }
   }
@@ -140,6 +159,9 @@ $("#nfc").keyup((e) => {
     // during check-in, pair + admit into "check-in" event
     return setPair(nfcCode)
       .then(()=> {
+        $("#name").val("")
+        $("#nfc").val("")
+        $("#name").focus()
         console.log("Paired successfully.")
         admitAttendee(nfcCode, true)
       })
@@ -189,6 +211,8 @@ function admitAttendee(id, isNFC) {
     headers: tokenHeader()
   }).then(res => {
     // res = { headers: "admitted" };
+    $("#name").val("")
+    $("#nfc").val("")
     console.log("admitted")
     console.log(res)
   });
@@ -205,6 +229,8 @@ function unadmitAttendee(id, isNFC) {
     headers: tokenHeader()
   }).then(res => {
     // res = { headers: "unadmitted" };
+    $("#name").val("")
+    $("#nfc").val("")
     console.log("unadmitted")
     console.log(res)
   });
