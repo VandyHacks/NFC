@@ -13,7 +13,6 @@ let EVENT_NAME = "";
 let EVENT_URL = `${API_URL}/events`;
 
 const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
-const CHECK_IN_NAME = "test-check-in";
 const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 
 // main initial load
@@ -81,7 +80,8 @@ function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 $("#event-selector").change(() => {
-  if ($("#event-selector").prop("selectedIndex") === 0) {
+  const index = $("#event-selector").prop("selectedIndex");
+  if (index === 0) {
     setInputDisable(true);
     EVENT_ID = "";
     EVENT_NAME = "";
@@ -89,8 +89,8 @@ $("#event-selector").change(() => {
   }
 
   // have to subtract 1 to account for default choice (Choose event...)
-  EVENT_ID = events[$("#event-selector").prop("selectedIndex") - 1]._id;
-  EVENT_NAME = events[$("#event-selector").prop("selectedIndex") - 1].name;
+  EVENT_ID = events[index - 1]._id;
+  EVENT_NAME = events[index - 1].name;
   console.log("selected event id: ", EVENT_ID);
   console.log("selected event name: ", EVENT_NAME);
 
@@ -98,7 +98,8 @@ $("#event-selector").change(() => {
     setInputDisable(false);
   }
 
-  if (EVENT_NAME === CHECK_IN_NAME) {
+  // initializes focus for new event
+  if (isCheckIn()) {
     $("#name").focus();
   } else {
     $("#nfc").focus();
@@ -128,7 +129,7 @@ $("#name").keyup(e => {
     return true; // is match
   };
   const matches = users.filter(criteria).slice(0, 5); // 5 max
-  const matches_condensed = matches.map(e => ({...e, id: undefined}));
+  const matches_condensed = matches.map(e => ({...e, id: undefined})); // deep-copy, remove ids from display
   $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
 
   if (matches.length === 0) {
@@ -141,11 +142,11 @@ $("#name").keyup(e => {
   }
   console.log(matches);
 
-  if (EVENT_NAME !== CHECK_IN_NAME) {
+  if (!isCheckIn()) {
     const admit = !($("#unadmit-checkbox").prop("checked"));
     setAdmitAttendee(id, false, admit);
   } else {
-    $("#nfc").focus();
+    $("#nfc").focus(); // during check-in: pressing enter on name focuses to nfc
   }
 });
 
@@ -158,20 +159,21 @@ $("#nfc").keyup(e => {
   if (nfcCode.length !== NFC_CODE_LENGTH) {
     return;
   }
-  if (EVENT_NAME === CHECK_IN_NAME) {
+  if (isCheckIn()) {
     // during check-in, pair + admit into "check-in" event
     return setPair(nfcCode)
       .then(() => {
-        clearInputs();
-        $("#name").focus();
         console.log("Paired successfully.");
         setAdmitAttendee(nfcCode, true, true);
+
+        $("#name").focus(); // during check-in: switch focus back to name for next submission
+        clearInputs();
       })
       .catch(err => console.log(err));
   }
   // else if not check-in event:
   const admit = !($("#unadmit-checkbox").prop("checked"));
-  setAdmitAttendee(id, false, admit);
+  setAdmitAttendee(nfcCode, true, admit);
 });
 
 
@@ -290,4 +292,8 @@ function clearInputs() {
 function setInputDisable(disable) {
   $("#name").prop("disabled", disable);
   $("#nfc").prop("disabled", disable);
+}
+
+function isCheckIn() {
+  return EVENT_NAME === "test-check-in";
 }
