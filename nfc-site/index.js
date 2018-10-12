@@ -16,8 +16,7 @@ const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
 const CHECK_IN_NAME = "test-check-in";
 const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 
-/**************************************************************************************************/
-/******************** Functions to get users and events *******************************************/
+// main initial load
 $("#maindiv").hide();
 window.onload = e => {
   setInterval(() => {
@@ -31,6 +30,9 @@ window.onload = e => {
     console.log(err);
   });
 };
+
+/**************************************************************************************************/
+/******************** Functions to get users and events *******************************************/
 
 async function getEvents() {
   const response = await fetch(transformURL(EVENT_URL));
@@ -53,6 +55,7 @@ async function getEvents() {
         .val(this._id)
         .text(this.name)
     );
+    
   });
 
   setInputDisable(true);
@@ -66,21 +69,13 @@ function fetchUserData() {
   })
     .then(data => data.json())
     .then(json => {
-      users = json.users;
       if (EVENT_ID) {
         setInputDisable(false);
       }
-
-      if (EVENT_NAME === CHECK_IN_NAME) {
-        $("#name").focus();
-      } else {
-        $("#nfc").focus();
-      }
-      console.log(users);
+      users = json.users;
+      console.log(`${users.length} users loaded.`);
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(err => console.log(err));
 }
 
 /**************************************************************************************************/
@@ -129,24 +124,22 @@ $("#name").keyup(e => {
     }
     return true; // is match
   };
-  let matches = users.filter(criteria).slice(0, 5); // 4 max
-  $("#student-info").html(JSON.stringify(matches, null, "\t"));
+  const matches = users.filter(criteria).slice(0, 5); // 5 max
+  const matches_condensed = matches.map(e => ({...e, id: undefined}));
+  $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
 
   if (matches.length !== 1) {
     return;
   }
   console.log(matches);
-  id = matches[0].id;
+  id = matches[0].id; // takes first match
 
   if (e.keyCode !== 13) {
     return;
   }
   if (EVENT_NAME !== CHECK_IN_NAME) {
-    if ($("#unadmit-checkbox").prop("checked")) {
-      unadmitAttendee(id, false);
-    } else {
-      admitAttendee(id, false);
-    }
+    const admit = !($("#unadmit-checkbox").prop("checked"));
+    setAdmitAttendee(id, false, admit);
   } else {
     $("#nfc").focus();
   }
@@ -157,7 +150,7 @@ $("#nfc").keyup(e => {
   if (e.keyCode !== 13) {
     return;
   }
-  let nfcCode = $("#nfc").val();
+  const nfcCode = $("#nfc").val();
   if (nfcCode.length !== NFC_CODE_LENGTH) {
     return;
   }
@@ -168,22 +161,21 @@ $("#nfc").keyup(e => {
         clearInputs();
         $("#name").focus();
         console.log("Paired successfully.");
-        admitAttendee(nfcCode, true);
+        setAdmitAttendee(nfcCode, true, true);
       })
       .catch(err => console.log(err));
   }
   // else if not check-in event:
-  if ($("#unadmit-checkbox").prop("checked")) {
-    unadmitAttendee(nfcCode, true);
-  } else {
-    admitAttendee(nfcCode, true);
-  }
+  const admit = !($("#unadmit-checkbox").prop("checked"));
+  setAdmitAttendee(id, false, admit);
 });
 
+
+/**************************************************************************************************/
+/*********************************** Actions w/ backend API ***************************************/
+
 function setPair(nfc) {
-  console.log(id);
-  console.log(nfc);
-  console.log(token);
+  console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
   return fetch(transformURL(PAIR_URL), {
     method: "PUT",
@@ -196,43 +188,27 @@ function setPair(nfc) {
     })
   })
     .then(res => res.json())
-    .then(json => console.log(JSON.stringify(json)))
-    .catch(err => {
-      console.log(err);
-    });
+    .then(json => console.log(json))
+    .catch(err => console.log(err));
 }
 
-/**********************************************************************
-This section below is pretty much copied from QR scan logic:
-See https://github.com/VandyHacks/VHF2017-qr-checkin/blob/master/index.html#L189
-**********************************************************************/
-
-// isNFC = true if id is NFC, else false (default)
-function admitAttendee(id, isNFC) {
-  let ADMIT_URL = `${EVENT_URL}/${EVENT_ID}/admit/${id}`; // to admit user by db id
+/**
+ * 
+ * @param {String} id :either user id, or nfc id
+ * @param {Boolean} isNFC :true if id is NFC, else false (default)
+ * @param {Boolean} admitStatus :true = admit, false = unadmit
+ */
+function setAdmitAttendee(id, isNFC, admitStatus) {
+  const action = admitStatus ? 'admit' : 'unadmit';
+  let URL = `${EVENT_URL}/${EVENT_ID}/${action}/${id}`;
   if (isNFC) {
-    ADMIT_URL += "?type=nfc";
+    URL += "?type=nfc";
   }
-  fetch(transformURL(ADMIT_URL), {
+  fetch(transformURL(URL), {
     headers: tokenHeader()
   }).then(res => {
     clearInputs();
-    console.log("admitted");
-    console.log(res);
-  });
-}
-
-// isNFC = true if id is NFC, else false (default)
-function unadmitAttendee(id, isNFC) {
-  let UNADMIT_URL = `${EVENT_URL}/${EVENT_ID}/unadmit/${id}`; // to unadmit user by db id
-  if (isNFC) {
-    UNADMIT_URL += "?type=nfc";
-  }
-  fetch(transformURL(UNADMIT_URL), {
-    headers: tokenHeader()
-  }).then(res => {
-    clearInputs();
-    console.log("unadmitted");
+    console.log(`ACTION: ${action}`);
     console.log(res);
   });
 }
