@@ -14,15 +14,11 @@ const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 $("#maindiv")[0].style.display = 'none';
 window.onload = e => {
   setInterval(() => {
-    getEvents().catch(err => {
-      console.log(err);
-    });
+    getEvents().catch(err => console.error(err));
   }, 30000);
 
   // for inital load:
-  getEvents().catch(err => {
-    console.log(err);
-  });
+  getEvents().catch(err => console.error(err));
 };
 
 /**************************************************************************************************/
@@ -70,7 +66,7 @@ function fetchUserData() {
       users = json.users;
       console.log(`${users.length} users loaded.`);
     })
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 }
 
 /**************************************************************************************************/
@@ -167,7 +163,7 @@ $("#nfc").on('keyup', e => {
         $("#name").trigger("focus"); // during check-in: switch focus back to name for next submission
         clearInputs();
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   }
   // else if not check-in event:
   const admit = !($("#unadmit-checkbox").prop("checked"));
@@ -179,6 +175,9 @@ $("#nfc").on('keyup', e => {
 /*********************************** Actions w/ backend API ***************************************/
 
 function setPair(nfc) {
+  if (!id){
+    return Promise.reject('No id found.');
+  }
   console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
   return fetch(transformURL(PAIR_URL), {
@@ -193,7 +192,7 @@ function setPair(nfc) {
     })
     .then(res => res.json())
     .then(json => console.log(json))
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 }
 
 /**
@@ -251,7 +250,7 @@ function setToken() {
       }
     })
     .then(fetchUserData)
-    .catch(err => console.log(err));
+    .catch(err => console.error(err));
 }
 
 // On auth code popup submit, set the token and call setToken()
