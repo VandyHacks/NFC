@@ -9,8 +9,9 @@ const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
 const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
 
+
 // main initial load
-$("#maindiv").hide();
+$("#maindiv")[0].style.display = 'none';
 window.onload = e => {
   setInterval(() => {
     getEvents().catch(err => {
@@ -42,13 +43,13 @@ async function getEvents() {
   console.log("new events: ", json);
   events = json;
   $("#event-selector").html("<option selected>Choose Event...</option>");
-  $.each(events, function() {
+  $.each(events, function () {
     $("#event-selector").append(
       $("<option />")
-        .val(this._id)
-        .text(this.name)
+      .val(this._id)
+      .text(this.name)
     );
-    
+
   });
 
   setInputDisable(true);
@@ -59,8 +60,8 @@ async function getEvents() {
 function fetchUserData() {
   const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
   fetch(transformURL(USERS_URL), {
-    headers: tokenHeader()
-  })
+      headers: tokenHeader()
+    })
     .then(data => data.json())
     .then(json => {
       if (EVENT_ID) {
@@ -74,7 +75,7 @@ function fetchUserData() {
 
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
-$("#event-selector").change(() => {
+$("#event-selector").on('change', () => {
   const index = $("#event-selector").prop("selectedIndex");
   if (index === 0) {
     setInputDisable(true);
@@ -95,17 +96,17 @@ $("#event-selector").change(() => {
 
   // initializes focus for new event
   if (isCheckIn()) {
-    $("#name").focus();
+    $("#name").trigger("focus");
   } else {
-    $("#nfc").focus();
+    $("#nfc").trigger("focus");
   }
 });
 
 // Displays user of corresponding fuzz match
-$("#name").keyup(e => {
+$("#name").on('keyup', e => {
   id = undefined; // reset id
   const INPUT = $("#name").val().toLowerCase();
-  if(INPUT.length === 0){
+  if (INPUT.length === 0) {
     $("#student-info").html("");
     return;
   }
@@ -124,13 +125,15 @@ $("#name").keyup(e => {
     return true; // is match
   };
   const matches = users.filter(criteria).slice(0, 5); // 5 max
-  const matches_condensed = matches.map(e => ({...e, id: undefined})); // deep-copy, remove ids from display
+  const matches_condensed = matches.map(e => ({ ...e,
+    id: undefined
+  })); // deep-copy, remove ids from display
   $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
 
   if (matches.length === 0) {
     return;
   }
-  
+
   id = matches[0].id; // takes first match
   if (e.keyCode !== 13) {
     return;
@@ -141,12 +144,12 @@ $("#name").keyup(e => {
     const admit = !($("#unadmit-checkbox").prop("checked"));
     setAdmitAttendee(id, false, admit);
   } else {
-    $("#nfc").focus(); // during check-in: pressing enter on name focuses to nfc
+    $("#nfc").trigger("focus"); // during check-in: pressing enter on name focuses to nfc
   }
 });
 
 // On nfc code submission
-$("#nfc").keyup(e => {
+$("#nfc").on('keyup', e => {
   if (e.keyCode !== 13) {
     return;
   }
@@ -161,7 +164,7 @@ $("#nfc").keyup(e => {
         console.log("Paired successfully.");
         setAdmitAttendee(nfcCode, true, true);
 
-        $("#name").focus(); // during check-in: switch focus back to name for next submission
+        $("#name").trigger("focus"); // during check-in: switch focus back to name for next submission
         clearInputs();
       })
       .catch(err => console.log(err));
@@ -179,15 +182,15 @@ function setPair(nfc) {
   console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
   return fetch(transformURL(PAIR_URL), {
-    method: "PUT",
-    headers: new Headers({
-      "x-event-secret": token,
-      "Content-Type": "application/json"
-    }),
-    body: JSON.stringify({
-      code: nfc
+      method: "PUT",
+      headers: new Headers({
+        "x-event-secret": token,
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify({
+        code: nfc
+      })
     })
-  })
     .then(res => res.json())
     .then(json => console.log(json))
     .catch(err => console.log(err));
@@ -229,19 +232,19 @@ function tokenHeader() {
 function setToken() {
   console.log(token);
   fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
-    method: "POST",
-    headers: new Headers({
-      "Content-Type": "application/json"
-    }),
-    body: JSON.stringify({
-      token: token
+      method: "POST",
+      headers: new Headers({
+        "Content-Type": "application/json"
+      }),
+      body: JSON.stringify({
+        token: token
+      })
     })
-  })
     .then(res => {
       if (res.ok) {
         window.localStorage.storedToken2 = token;
         $("#auth").remove();
-        $("#maindiv").show();
+        $("#maindiv")[0].style.display = 'block';
       } else {
         console.log("invalid");
         alert("Invalid token");
@@ -252,20 +255,20 @@ function setToken() {
 }
 
 // On auth code popup submit, set the token and call setToken()
-$("#authcode").keyup(e => {
+$("#authcode").on('keyup', e => {
   if (e.keyCode === 13) {
     token = $("#authcode").val();
     setToken();
   }
 });
-$("#auth-button").click(() => {
+$("#auth-button").on('click', () => {
   token = $("#authcode").val();
   setToken();
 });
 
 /**************************************************************************************************/
 /****************************************** Utils *************************************************/
-let transformURL = url => {
+function transformURL(url) {
   // if dev
   if (!location.hostname.endsWith("vandyhacks.org")) {
     // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
@@ -291,3 +294,23 @@ function setInputDisable(disable) {
 function isCheckIn() {
   return EVENT_NAME === "test-check-in";
 }
+
+/*
+ * mimic jQuery DOM functionality with jQuery syntax
+ * creates elements, and selects elements using $
+ *
+ */
+/*
+const $ = (str) => {
+  const len = str.length;
+  switch (str[0]) {
+    case '<': // create dom element
+      if (str[len - 1] === '>') {
+        return document.createElement(str.slice(1, len - 1));
+      }
+      break;
+    default: // select dom element
+      const nodes = document.querySelectorAll(str);
+      return nodes.length > 1 ? nodes : nodes[0]; // returns 1 elem, or list of elements
+  }
+};*/
