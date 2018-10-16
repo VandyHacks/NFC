@@ -17,6 +17,15 @@ input {
     margin-left: 10%;
     margin-right: 10%;
 }
+#maindiv {
+    width: 40%; 
+    display: none;
+}
+@media only screen and (max-width: 600px) {
+    #maindiv {
+      width: 100%;
+    }
+}
 #student-info {
     white-space: pre
 }
@@ -38,8 +47,7 @@ input {
 
   <body>
     <div class="input-group" id="auth">
-      <label class='inputlabel' id="auth-label">>>> You must authenticate <<<</label>
-      <input type="text" class="form-control" name="authcode" id="authcode" placeholder="">
+      <input type="text" class="form-control" name="authcode" id="authcode" placeholder="Auth code">
       <button class="btn btn-outline-secondary" id="auth-button">Submit</button>
     </div>
 
@@ -47,7 +55,7 @@ input {
       <h1 class="mx-auto navbar-brand">VandyHacks V Scanner Form</h1>
     </nav>
 
-    <div id='maindiv' class="container center-block" style="width: 50%; display: none;">
+    <div id='maindiv' class="container center-block">
       <div class="row center-block">
         <div class="col">
           <div>
@@ -56,24 +64,17 @@ input {
             </select>
           </div>
           <br>
-          <!-- <div class="input-group">
-            <label class='inputlabel'>Shortcode</label>
-            <input type="text" class="form-control" name="shortcode" id="shortcode" placeholder="">
-          </div>
-          <br> -->
           <div class="input-group">
-            <label class='inputlabel'>User lookup</label>
-            <input type="text" class="form-control" name="name" id="name" placeholder="" disabled>
+            <input type="text" class="form-control" name="name" id="name" placeholder="User Search" disabled>
           </div>
           <br>
           <div class="input-group">
-            <label class='inputlabel'>NFC code</label>
-            <input type="text" class="form-control" name="nfc" id="nfc" placeholder="" disabled>
+            <input type="text" class="form-control" name="nfc" id="nfc" placeholder="NFC Code" disabled>
           </div>
           <br>
           <div class="custom-control custom-checkbox">
             <input type="checkbox" class="custom-control-input" id="unadmit-checkbox">
-            <label class="custom-control-label" for="unadmit-checkbox">Check to enable unadmit</label>
+            <label class="custom-control-label" for="unadmit-checkbox">Unadmit Mode</label>
           </div>
           <br>
           <div id="student-info">
