@@ -9,9 +9,6 @@ const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
 const NFC_CODE_MIN_LENGTH = 5; // prevent accidental key press submission
 
-
-// main initial load
-$("#maindiv")[0].style.display = 'none';
 window.onload = e => {
   setInterval(() => {
     getEvents().catch(err => console.error(err));
@@ -33,10 +30,10 @@ async function getEvents() {
     return event;
   });
   if (JSON.stringify(events) === JSON.stringify(json)) {
+    console.log('Fetched events, no need to refresh.')
     return;
   }
-  console.log("old events: ", events);
-  console.log("new events: ", json);
+  console.log("Refreshed events: ", json);
   events = json;
   $("#event-selector").html("<option selected>Choose Event...</option>");
   $.each(events, function () {
