@@ -151,7 +151,7 @@ $("#nfc").on('keyup', e => {
   }
   const nfcCode = $("#nfc").val();
   
-  if (nfcCode.length < NFC_CODE_MIN_LENGTH) {]
+  if (nfcCode.length < NFC_CODE_MIN_LENGTH) {
     console.error(`NFC code must be longer than ${NFC_CODE_MIN_LENGTH} chars.`)
     return;
   }
