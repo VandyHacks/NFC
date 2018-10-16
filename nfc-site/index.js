@@ -16,7 +16,7 @@ window.onload = e => {
     getEvents().catch(err => {
       console.log(err);
     });
-  }, 30000);
+  }, 3000000);
 
   // for inital load:
   getEvents().catch(err => {
@@ -151,7 +151,7 @@ $("#nfc").keyup(e => {
     return;
   }
   const nfcCode = $("#nfc").val();
-  if (nfcCode.length !== NFC_CODE_LENGTH) {
+  if (nfcCode.length <= NFC_CODE_LENGTH) {
     return;
   }
   if (isCheckIn()) {
