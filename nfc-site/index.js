@@ -7,7 +7,7 @@ let EVENT_NAME = "";
 
 const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
-const NFC_CODE_LENGTH = 4; // TODO: make this the actual nfc code length
+const NFC_CODE_MIN_LENGTH = 5; // prevent accidental key press submission
 
 
 // main initial load
@@ -151,7 +151,7 @@ $("#nfc").on('keyup', e => {
   }
   const nfcCode = $("#nfc").val();
   
-  if (nfcCode.length < NFC_CODE_LENGTH) {
+  if (nfcCode.length < NFC_CODE_MIN_LENGTH) {
     return;
   }
   if (isCheckIn()) {
