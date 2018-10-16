@@ -150,7 +150,7 @@ $("#nfc").on('keyup', e => {
     return;
   }
   const nfcCode = $("#nfc").val();
-  if (nfcCode.length !== NFC_CODE_LENGTH) {
+  if (nfcCode.length > NFC_CODE_LENGTH) {
     return;
   }
   if (isCheckIn()) {
