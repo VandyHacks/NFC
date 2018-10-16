@@ -1,6 +1,7 @@
-# NFC
+# NFC-webapp
 NFC web application, using any NFC scanner system that can emulate keyboard input.
 
+### Features:
 * Auth code to prevent unauthorized access
 * During check-in, can associate students (fuzzy search name/email/school) to NFC UUIDs.
 * Event dropdown to select event
