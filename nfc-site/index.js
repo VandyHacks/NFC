@@ -116,6 +116,7 @@ dom("#event-selector").addEventListener("change", () => {
 
 // Displays user of corresponding fuzz match
 dom("#name").addEventListener("keyup", e => {
+  colorLastUser(false);
   id = undefined; // reset id
   const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
@@ -163,6 +164,7 @@ dom("#name").addEventListener("keyup", e => {
 
 // On nfc code submission
 dom("#nfc").addEventListener("keyup", e => {
+  colorLastUser(false);
   if (e.keyCode !== 13) {
     return;
   }
@@ -241,6 +243,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     if (match) {
       console.log(match)
       dom("#student-info").innerHTML = JSON.stringify(match, null, "\t");
+      colorLastUser(true);
     }
   } catch (err) {
     return console.error(err);
@@ -302,6 +305,12 @@ dom("#auth-button").addEventListener("click", () => {
 
 /**************************************************************************************************/
 /****************************************** Utils *************************************************/
+
+// sets color of student output
+function colorLastUser(isLastUser) {
+  dom("#student-info").style.color = isLastUser ? '#308030' : '#000000';
+}
+
 function transformURL(url) {
   const isDev = !location.hostname.endsWith("vandyhacks.org");
   // bypass CORS issues in client-side API calls during localhost/dev, see https://github.com/Freeboard/thingproxy
