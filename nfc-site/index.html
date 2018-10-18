@@ -42,6 +42,11 @@ input {
     margin: auto;
 }
 
+.custom-checkbox {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
 </style>
 </head>
 
@@ -72,9 +77,15 @@ input {
             <input type="text" class="form-control" name="nfc" id="nfc" placeholder="NFC Code" disabled>
           </div>
           <br>
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="unadmit-checkbox">
-            <label class="custom-control-label" for="unadmit-checkbox">Unadmit Mode</label>
+          <div class="input-group">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="unadmit-checkbox">
+              <label class="custom-control-label" for="unadmit-checkbox"> Unadmit Mode</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="search-checkbox">
+              <label class="custom-control-label" for="search-checkbox"> Manual Search</label>
+            </div>
           </div>
           <br>
           <div id="student-info">

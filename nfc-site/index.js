@@ -68,6 +68,17 @@ function fetchUserData() {
 
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
+
+$("#search-checkbox").on('change', () => {
+  // enable user to TOGGLE search bar visibility during non-checkin events
+  if (isCheckIn()) {
+    return;
+  }
+  const showSearch = $("#search-checkbox").prop("checked");
+  $("#name")[0].style.display = showSearch ? 'block' : 'none';
+  $("#nfc")[0].style.display = showSearch ? 'none' : 'block';
+});
+
 $("#event-selector").on('change', () => {
   const index = $("#event-selector").prop("selectedIndex");
   if (index === 0) {
@@ -76,6 +87,9 @@ $("#event-selector").on('change', () => {
     EVENT_NAME = "";
     return;
   }
+
+  // reset inputs
+  resetInputs();
 
   // have to subtract 1 to account for default choice (Choose event...)
   EVENT_ID = events[index - 1]._id;
@@ -157,7 +171,7 @@ $("#nfc").on('keyup', e => {
     return setPair(nfcCode)
       .then(() => {
         console.log("Paired successfully.");
-        clearInputs();
+        resetInputs();
         $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
         setAdmitAttendee(nfcCode, true, true);
       })
@@ -189,7 +203,7 @@ function setPair(nfc) {
       })
     })
     .then(res => res.json())
-    .then(json => console.log(json))
+    .then(json => console.log('Pair result: ' + JSON.stringify(json)))
     .catch(err => console.error(err));
 }
 
@@ -207,10 +221,12 @@ function setAdmitAttendee(id, isNFC, admitStatus) {
   }
   fetch(transformURL(URL), {
     headers: tokenHeader()
-  }).then(res => {
-    clearInputs();
+  })
+  .then(res => res.json())
+  .then(json => {
+    resetInputs();
     console.log(`ACTION: ${action}`);
-    console.log(res);
+    console.log(json);
   });
 }
 
@@ -276,16 +292,21 @@ function transformURL(url) {
   return url;
 };
 
-// clears input fields
-function clearInputs() {
-  $("#name").val("");
-  $("#nfc").val("");
+// clears input fields && sets visible
+function resetInputs() {
+  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  elems.forEach(e => {
+    $(e).val(""); // clear field
+    $(e)[0].style.display = 'block'; // set visible
+  });
 }
 
 // toggles disabling input
 function setInputDisable(disable) {
-  $("#name").prop("disabled", disable);
-  $("#nfc").prop("disabled", disable);
+  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  elems.forEach(e => {
+    $(e).prop("disabled", disable);
+  });
 }
 
 function isCheckIn() {
