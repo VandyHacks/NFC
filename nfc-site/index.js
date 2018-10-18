@@ -30,7 +30,7 @@ async function getEvents() {
     return event;
   });
   if (JSON.stringify(events) === JSON.stringify(json)) {
-    console.log('Fetched events, no need to refresh.')
+    console.log("Fetched events, no need to refresh.");
     return;
   }
   console.log("Refreshed events: ", json);
@@ -39,8 +39,8 @@ async function getEvents() {
   events.forEach(e => {
     $("#event-selector").append(
       $("<option />")
-      .val(e._id)
-      .text(e.name)
+        .val(e._id)
+        .text(e.name)
     );
   });
 
@@ -52,8 +52,8 @@ async function getEvents() {
 function fetchUserData() {
   const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
   fetch(transformURL(USERS_URL), {
-      headers: tokenHeader()
-    })
+    headers: tokenHeader()
+  })
     .then(data => data.json())
     .then(json => {
       if (EVENT_ID) {
@@ -68,19 +68,20 @@ function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 
-$("#search-checkbox").on('change', () => {
+$("#search-checkbox").on("change", () => {
   // enable user to TOGGLE search bar visibility during non-checkin events
   if (isCheckIn()) {
     return;
   }
   const showSearch = $("#search-checkbox").prop("checked");
-  $("#name")[0].style.display = showSearch ? 'block' : 'none';
-  $("#nfc")[0].style.display = showSearch ? 'none' : 'block';
+  $("#name")[0].style.display = showSearch ? "block" : "none";
+  $("#nfc")[0].style.display = showSearch ? "none" : "block";
 });
 
-$("#event-selector").on('change', () => {
+$("#event-selector").on("change", () => {
   const index = $("#event-selector").prop("selectedIndex");
-  if (index === 0) { // if no event selected
+  if (index === 0) {
+    // if no event selected
     setInputDisable(true);
     EVENT_ID = "";
     EVENT_NAME = "";
@@ -104,18 +105,20 @@ $("#event-selector").on('change', () => {
   if (isCheckIn()) {
     $("#name")[0].focus();
     // hide checkboxes
-    $("#checkboxes")[0].style.display = 'none';
+    $("#checkboxes")[0].style.display = "none";
   } else {
     $("#nfc")[0].focus();
     // hide search default
-    $("#name")[0].style.display = 'none';
+    $("#name")[0].style.display = "none";
   }
 });
 
 // Displays user of corresponding fuzz match
-$("#name").on('keyup', e => {
+$("#name").on("keyup", e => {
   id = undefined; // reset id
-  const INPUT = $("#name").val().toLowerCase();
+  const INPUT = $("#name")
+    .val()
+    .toLowerCase();
   if (INPUT.length === 0) {
     $("#student-info").html("");
     return;
@@ -135,7 +138,8 @@ $("#name").on('keyup', e => {
     return true; // is match
   };
   const matches = users.filter(criteria).slice(0, 5); // 5 max
-  const matches_condensed = matches.map(e => ({ ...e,
+  const matches_condensed = matches.map(e => ({
+    ...e,
     id: undefined
   })); // deep-copy, remove ids from display
   $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
@@ -151,7 +155,7 @@ $("#name").on('keyup', e => {
   console.log(matches);
 
   if (!isCheckIn()) {
-    const admit = !($("#unadmit-checkbox").prop("checked"));
+    const admit = !$("#unadmit-checkbox").prop("checked");
     setAdmitAttendee(id, false, admit);
   } else {
     $("#nfc")[0].focus(); // during check-in: pressing enter on name focuses to nfc
@@ -159,14 +163,14 @@ $("#name").on('keyup', e => {
 });
 
 // On nfc code submission
-$("#nfc").on('keyup', e => {
+$("#nfc").on("keyup", e => {
   if (e.keyCode !== 13) {
     return;
   }
   const nfcCode = $("#nfc").val();
-  
+
   if (nfcCode.length < NFC_CODE_MIN_LENGTH) {
-    console.error(`NFC code must be longer than ${NFC_CODE_MIN_LENGTH} chars.`)
+    console.error(`NFC code must be longer than ${NFC_CODE_MIN_LENGTH} chars.`);
     return;
   }
   if (isCheckIn()) {
@@ -181,17 +185,16 @@ $("#nfc").on('keyup', e => {
       .catch(err => console.error(err));
   }
   // else if not check-in event:
-  const admit = !($("#unadmit-checkbox").prop("checked"));
+  const admit = !$("#unadmit-checkbox").prop("checked");
   setAdmitAttendee(nfcCode, true, admit);
 });
-
 
 /**************************************************************************************************/
 /*********************************** Actions w/ backend API ***************************************/
 
 async function setPair(nfc) {
-  if (!id){
-    return Promise.reject('Unable to pair: no user id found.');
+  if (!id) {
+    return Promise.reject("Unable to pair: no user id found.");
   }
   console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
@@ -207,21 +210,20 @@ async function setPair(nfc) {
       })
     });
     const json = await res.json();
-    return console.log('Pair result: ' + JSON.stringify(json));
-  }
-  catch (err) {
+    return console.log("Pair result: " + JSON.stringify(json));
+  } catch (err) {
     return console.error(err);
   }
 }
 
 /**
- * 
+ *
  * @param {String} id :either user id, or nfc id
  * @param {Boolean} isNFC :true if id is NFC, else false (default)
  * @param {Boolean} admitStatus :true = admit, false = unadmit
  */
 async function setAdmitAttendee(id, isNFC, admitStatus) {
-  const action = admitStatus ? 'admit' : 'unadmit';
+  const action = admitStatus ? "admit" : "unadmit";
   let URL = `${EVENT_URL}/${EVENT_ID}/${action}/${id}`;
   if (isNFC) {
     URL += "?type=nfc";
@@ -234,8 +236,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     resetInputs();
     console.log(`ACTION: ${action}`);
     console.log(json);
-  }
-  catch (err) {
+  } catch (err) {
     return console.log(err);
   }
 }
@@ -255,38 +256,40 @@ function tokenHeader() {
 async function setToken() {
   console.log(token);
   try {
-    const res = await fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      }),
-      body: JSON.stringify({
-        token: token
-      })
-    })
+    const res = await fetch(
+      transformURL("https://apply.vandyhacks.org/auth/eventcode/"),
+      {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json"
+        }),
+        body: JSON.stringify({
+          token: token
+        })
+      }
+    );
     if (res.ok) {
       window.localStorage.storedToken2 = token;
       $("#auth").remove();
-      $("#maindiv")[0].style.display = 'block';
+      $("#maindiv")[0].style.display = "block";
     } else {
       console.log("invalid");
       alert("Invalid token");
     }
     await fetchUserData();
-  }
-  catch(err) {
+  } catch (err) {
     return console.error(err);
-  };
+  }
 }
 
 // On auth code popup submit, set the token and call setToken()
-$("#authcode").on('keyup', e => {
+$("#authcode").on("keyup", e => {
   if (e.keyCode === 13) {
     token = $("#authcode").val();
     setToken();
   }
 });
-$("#auth-button").on('click', () => {
+$("#auth-button").on("click", () => {
   token = $("#authcode").val();
   setToken();
 });
@@ -302,15 +305,15 @@ function transformURL(url) {
   }
   // if prod
   return url;
-};
+}
 
 // clears input fields && sets visible
 function resetInputs() {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
-  $("#checkboxes")[0].style.display = 'block';
+  $("#checkboxes")[0].style.display = "block";
   elems.forEach(e => {
     $(e).val(""); // clear field
-    $(e)[0].style.display = 'block'; // set visible
+    $(e)[0].style.display = "block"; // set visible
   });
 }
 
