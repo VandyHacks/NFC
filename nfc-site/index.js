@@ -308,7 +308,12 @@ dom("#auth-button").addEventListener("click", () => {
 
 // sets color of student output
 function colorLastUser(isLastUser) {
-  dom("#student-info").style.color = isLastUser ? '#308030' : '#000000';
+  let colors = ['#308030', '#000000'];
+  let darkMode = true;
+  if (darkMode) {
+    colors = ['#50bb50', '#e6e6e6'];
+  }
+  dom("#student-info").style.color = isLastUser ? colors[0]: colors[1];
 }
 
 function transformURL(url) {
