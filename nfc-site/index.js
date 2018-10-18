@@ -35,7 +35,7 @@ async function getEvents() {
   }
   console.log("Refreshed events: ", json);
   events = json;
-  $("#event-selector").html("<option selected>Choose Event...</option>");
+  dom("#event-selector").innerHTML = "<option selected>Choose Event...</option>";
   events.forEach(e => {
     $("#event-selector").append(
       $("<option />")
@@ -70,18 +70,18 @@ async function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 
-$("#search-checkbox").on("change", () => {
+dom("#search-checkbox").addEventListener("change", () => {
   // enable user to TOGGLE search bar visibility during non-checkin events
   if (isCheckIn()) {
     return;
   }
-  const showSearch = $("#search-checkbox").prop("checked");
-  $("#name")[0].style.display = showSearch ? "block" : "none";
-  $("#nfc")[0].style.display = showSearch ? "none" : "block";
+  const showSearch = dom("#search-checkbox").checked;
+  dom("#name").style.display = showSearch ? "block" : "none";
+  dom("#nfc").style.display = showSearch ? "none" : "block";
 });
 
-$("#event-selector").on("change", () => {
-  const index = $("#event-selector").prop("selectedIndex");
+dom("#event-selector").addEventListener("change", () => {
+  const index = dom("#event-selector").selectedIndex;
   if (index === 0) {
     // if no event selected
     setInputDisable(true);
@@ -105,24 +105,22 @@ $("#event-selector").on("change", () => {
 
   // initializes focus for new event
   if (isCheckIn()) {
-    $("#name")[0].focus();
+    dom("#name").focus();
     // hide checkboxes
-    $("#checkboxes")[0].style.display = "none";
+    dom("#checkboxes").style.display = "none";
   } else {
-    $("#nfc")[0].focus();
+    dom("#nfc").focus();
     // hide search default
-    $("#name")[0].style.display = "none";
+    dom("#name").style.display = "none";
   }
 });
 
 // Displays user of corresponding fuzz match
-$("#name").on("keyup", e => {
+dom("#name").addEventListener("keyup", e => {
   id = undefined; // reset id
-  const INPUT = $("#name")
-    .val()
-    .toLowerCase();
+  const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
-    $("#student-info").html("");
+    dom("#student-info").innerHTML = "";
     return;
   }
   let criteria = user => {
@@ -144,7 +142,7 @@ $("#name").on("keyup", e => {
     ...e,
     id: undefined
   })); // deep-copy, remove ids from display
-  $("#student-info").html(JSON.stringify(matches_condensed, null, "\t"));
+  dom("#student-info").innerHTML = JSON.stringify(matches_condensed, null, "\t");
 
   if (matches.length === 0) {
     return;
@@ -157,19 +155,19 @@ $("#name").on("keyup", e => {
   console.log(matches);
 
   if (!isCheckIn()) {
-    const admit = !$("#unadmit-checkbox").prop("checked");
+    const admit = !dom("#unadmit-checkbox").checked;
     setAdmitAttendee(id, false, admit);
   } else {
-    $("#nfc")[0].focus(); // during check-in: pressing enter on name focuses to nfc
+    dom("#nfc").focus(); // during check-in: pressing enter on name focuses to nfc
   }
 });
 
 // On nfc code submission
-$("#nfc").on("keyup", e => {
+dom("#nfc").addEventListener("keyup", e => {
   if (e.keyCode !== 13) {
     return;
   }
-  const nfcCode = $("#nfc").val();
+  const nfcCode = dom("#nfc").value;
 
   if (nfcCode.length < NFC_CODE_MIN_LENGTH) {
     console.error(`NFC code must be longer than ${NFC_CODE_MIN_LENGTH} chars.`);
@@ -181,12 +179,12 @@ $("#nfc").on("keyup", e => {
       .then(() => {
         console.log("Paired successfully.");
         setAdmitAttendee(nfcCode, true, true);
-        $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
+        dom("#name").focus(); // during check-in: switch focus back to name for next submission
       })
       .catch(err => console.error(err));
   }
   // else if not check-in event:
-  const admit = !$("#unadmit-checkbox").prop("checked");
+  const admit = !dom("#unadmit-checkbox").checked;
   setAdmitAttendee(nfcCode, true, admit);
 });
 
@@ -237,13 +235,13 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     clearInputs();
     console.log(`ACTION: ${action}`);
     if (json.error) {
-      $("#student-info").html(JSON.stringify(json.error));
+      dom("#student-info").innerHTML = JSON.stringify(json.error);
     }
     console.log(json);
     const match = users.filter(u => u.id === json)[0]
     if (match) {
       console.log(match)
-      $("#student-info").html(JSON.stringify(match, null, "\t"));
+      dom("#student-info").innerHTML = JSON.stringify(match, null, "\t");
     }
   } catch (err) {
     return console.error(err);
@@ -279,7 +277,7 @@ async function setToken() {
     );
     if (res.ok) {
       $("#auth").remove();
-      $("#maindiv")[0].style.display = "block";
+      dom("#maindiv").style.display = "block";
     } else {
       console.log("invalid token");
       alert("Invalid token");
@@ -291,14 +289,14 @@ async function setToken() {
 }
 
 // On auth code popup submit, set the token and call setToken()
-$("#authcode").on("keyup", e => {
+dom("#authcode").addEventListener("keyup", e => {
   if (e.keyCode === 13) {
-    token = $("#authcode").val();
+    token = dom("#authcode").value;
     setToken();
   }
 });
-$("#auth-button").on("click", () => {
-  token = $("#authcode").val();
+dom("#auth-button").addEventListener("click", () => {
+  token = dom("#authcode").value;
   setToken();
 });
 
@@ -314,9 +312,9 @@ function transformURL(url) {
 function resetInputs() {
   clearInputs();
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
-  $("#checkboxes")[0].style.display = "block";
+  dom("#checkboxes").style.display = "block";
   elems.forEach(e => {
-    $(e)[0].style.display = "block"; // set visible
+    dom(e).style.display = "block"; // set visible
   });
 }
 
@@ -324,7 +322,7 @@ function resetInputs() {
 function clearInputs() {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
   elems.forEach(e => {
-    $(e).val(""); // clear field
+    dom(e).value = ""; // clear field
   });
 }
 
@@ -332,7 +330,7 @@ function clearInputs() {
 function setInputDisable(disable) {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
   elems.forEach(e => {
-    $(e).prop("disabled", disable);
+    dom(e).disabled = disable;
   });
 }
 
@@ -340,23 +338,3 @@ function isCheckIn() {
   // TODO: change to actual name for prod
   return EVENT_NAME === "test-check-in";
 }
-
-/*
- * mimic jQuery DOM functionality with jQuery syntax
- * creates elements, and selects elements using $
- *
- */
-/*
-const $ = (str) => {
-  const len = str.length;
-  switch (str[0]) {
-    case '<': // create dom element
-      if (str[len - 1] === '>') {
-        return document.createElement(str.slice(1, len - 1));
-      }
-      break;
-    default: // select dom element
-      const nodes = document.querySelectorAll(str);
-      return nodes.length > 1 ? nodes : nodes[0]; // returns 1 elem, or list of elements
-  }
-};*/
