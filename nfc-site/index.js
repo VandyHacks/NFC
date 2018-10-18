@@ -49,20 +49,22 @@ async function getEvents() {
   EVENT_NAME = "";
 }
 
-function fetchUserData() {
+async function fetchUserData() {
   const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
-  fetch(transformURL(USERS_URL), {
-    headers: tokenHeader()
-  })
-    .then(data => data.json())
-    .then(json => {
-      if (EVENT_ID) {
-        setInputDisable(false);
-      }
-      users = json.users;
-      console.log(`${users.length} users loaded.`);
-    })
-    .catch(err => console.error(err));
+  try {
+    const data = await fetch(transformURL(USERS_URL), {
+      headers: tokenHeader()
+    });
+    const json = await data.json();
+    if (EVENT_ID) {
+      setInputDisable(false);
+    }
+    users = json.users;
+    console.log(`${users.length} users loaded.`);
+  }
+  catch (err) {
+    return console.error(err);
+  }
 }
 
 /**************************************************************************************************/
