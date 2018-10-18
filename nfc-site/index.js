@@ -180,9 +180,8 @@ $("#nfc").on("keyup", e => {
     return setPair(nfcCode)
       .then(() => {
         console.log("Paired successfully.");
-        clearInputs();
-        $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
         setAdmitAttendee(nfcCode, true, true);
+        $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
       })
       .catch(err => console.error(err));
   }
@@ -247,7 +246,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
       $("#student-info").html(JSON.stringify(match, null, "\t"));
     }
   } catch (err) {
-    return console.log(err);
+    return console.error(err);
   }
 }
 
