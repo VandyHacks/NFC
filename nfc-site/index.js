@@ -37,11 +37,10 @@ async function getEvents() {
   events = json;
   dom("#event-selector").innerHTML = "<option selected>Choose Event...</option>";
   events.forEach(e => {
-    $("#event-selector").append(
-      $("<option />")
-        .val(e._id)
-        .text(e.name)
-    );
+    const newoption = dom("<option>");
+    newoption.value = e._id;
+    newoption.text = e.name;
+    dom("#event-selector").appendChild(newoption);
   });
 
   setInputDisable(true);
@@ -276,7 +275,8 @@ async function setToken() {
       }
     );
     if (res.ok) {
-      $("#auth").remove();
+      const authElem = dom("#auth");
+      authElem.parentNode.removeChild(authElem);
       dom("#maindiv").style.display = "block";
     } else {
       console.log("invalid token");
