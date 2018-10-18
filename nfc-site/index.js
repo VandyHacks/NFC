@@ -36,13 +36,12 @@ async function getEvents() {
   console.log("Refreshed events: ", json);
   events = json;
   $("#event-selector").html("<option selected>Choose Event...</option>");
-  $.each(events, function () {
+  events.forEach(e => {
     $("#event-selector").append(
       $("<option />")
-      .val(this._id)
-      .text(this.name)
+      .val(e._id)
+      .text(e.name)
     );
-
   });
 
   setInputDisable(true);
@@ -81,7 +80,7 @@ $("#search-checkbox").on('change', () => {
 
 $("#event-selector").on('change', () => {
   const index = $("#event-selector").prop("selectedIndex");
-  if (index === 0) {
+  if (index === 0) { // if no event selected
     setInputDisable(true);
     EVENT_ID = "";
     EVENT_NAME = "";
@@ -104,8 +103,12 @@ $("#event-selector").on('change', () => {
   // initializes focus for new event
   if (isCheckIn()) {
     $("#name")[0].focus();
+    // hide checkboxes
+    $("#checkboxes")[0].style.display = 'none';
   } else {
     $("#nfc")[0].focus();
+    // hide search default
+    $("#name")[0].style.display = 'none';
   }
 });
 
@@ -295,6 +298,7 @@ function transformURL(url) {
 // clears input fields && sets visible
 function resetInputs() {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  $("#checkboxes")[0].style.display = 'block';
   elems.forEach(e => {
     $(e).val(""); // clear field
     $(e)[0].style.display = 'block'; // set visible
@@ -310,6 +314,7 @@ function setInputDisable(disable) {
 }
 
 function isCheckIn() {
+  // TODO: change to actual name for prod
   return EVENT_NAME === "test-check-in";
 }
 
