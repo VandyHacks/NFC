@@ -189,13 +189,14 @@ $("#nfc").on('keyup', e => {
 /**************************************************************************************************/
 /*********************************** Actions w/ backend API ***************************************/
 
-function setPair(nfc) {
+async function setPair(nfc) {
   if (!id){
     return Promise.reject('Unable to pair: no user id found.');
   }
   console.log(id, nfc, token);
   const PAIR_URL = `${API_URL}/users/${id}/NFC`;
-  return fetch(transformURL(PAIR_URL), {
+  try {
+    const res = await fetch(transformURL(PAIR_URL), {
       method: "PUT",
       headers: new Headers({
         "x-event-secret": token,
@@ -204,10 +205,13 @@ function setPair(nfc) {
       body: JSON.stringify({
         code: nfc
       })
-    })
-    .then(res => res.json())
-    .then(json => console.log('Pair result: ' + JSON.stringify(json)))
-    .catch(err => console.error(err));
+    });
+    const json = await res.json();
+    return console.log('Pair result: ' + JSON.stringify(json));
+  }
+  catch (err) {
+    return console.error(err);
+  }
 }
 
 /**
@@ -216,21 +220,24 @@ function setPair(nfc) {
  * @param {Boolean} isNFC :true if id is NFC, else false (default)
  * @param {Boolean} admitStatus :true = admit, false = unadmit
  */
-function setAdmitAttendee(id, isNFC, admitStatus) {
+async function setAdmitAttendee(id, isNFC, admitStatus) {
   const action = admitStatus ? 'admit' : 'unadmit';
   let URL = `${EVENT_URL}/${EVENT_ID}/${action}/${id}`;
   if (isNFC) {
     URL += "?type=nfc";
   }
-  fetch(transformURL(URL), {
-    headers: tokenHeader()
-  })
-  .then(res => res.json())
-  .then(json => {
+  try {
+    const res = await fetch(transformURL(URL), {
+      headers: tokenHeader()
+    });
+    const json = await res.json();
     resetInputs();
     console.log(`ACTION: ${action}`);
     console.log(json);
-  });
+  }
+  catch (err) {
+    return console.log(err);
+  }
 }
 
 /**************************************************************************************************/
@@ -245,9 +252,10 @@ function tokenHeader() {
 }
 
 // set auth JWT token
-function setToken() {
+async function setToken() {
   console.log(token);
-  fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
+  try {
+    const res = await fetch(transformURL("https://apply.vandyhacks.org/auth/eventcode/"), {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json"
@@ -256,18 +264,19 @@ function setToken() {
         token: token
       })
     })
-    .then(res => {
-      if (res.ok) {
-        window.localStorage.storedToken2 = token;
-        $("#auth").remove();
-        $("#maindiv")[0].style.display = 'block';
-      } else {
-        console.log("invalid");
-        alert("Invalid token");
-      }
-    })
-    .then(fetchUserData)
-    .catch(err => console.error(err));
+    if (res.ok) {
+      window.localStorage.storedToken2 = token;
+      $("#auth").remove();
+      $("#maindiv")[0].style.display = 'block';
+    } else {
+      console.log("invalid");
+      alert("Invalid token");
+    }
+    await fetchUserData();
+  }
+  catch(err) {
+    return console.error(err);
+  };
 }
 
 // On auth code popup submit, set the token and call setToken()
