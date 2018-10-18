@@ -180,7 +180,7 @@ $("#nfc").on("keyup", e => {
     return setPair(nfcCode)
       .then(() => {
         console.log("Paired successfully.");
-        resetInputs();
+        clearInputs();
         $("#name")[0].focus(); // during check-in: switch focus back to name for next submission
         setAdmitAttendee(nfcCode, true, true);
       })
@@ -235,9 +235,17 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
       headers: tokenHeader()
     });
     const json = await res.json();
-    resetInputs();
+    clearInputs();
     console.log(`ACTION: ${action}`);
+    if (json.error) {
+      $("#student-info").html(JSON.stringify(json.error));
+    }
     console.log(json);
+    const match = users.filter(u => u.id === json)[0]
+    if (match) {
+      console.log(match)
+      $("#student-info").html(JSON.stringify(match, null, "\t"));
+    }
   } catch (err) {
     return console.log(err);
   }
@@ -271,11 +279,10 @@ async function setToken() {
       }
     );
     if (res.ok) {
-      window.localStorage.storedToken2 = token;
       $("#auth").remove();
       $("#maindiv")[0].style.display = "block";
     } else {
-      console.log("invalid");
+      console.log("invalid token");
       alert("Invalid token");
     }
     await fetchUserData();
@@ -299,23 +306,26 @@ $("#auth-button").on("click", () => {
 /**************************************************************************************************/
 /****************************************** Utils *************************************************/
 function transformURL(url) {
-  // if dev
-  if (!location.hostname.endsWith("vandyhacks.org")) {
-    // primarily to bypass CORS issues in client-side API calls, see https://github.com/Freeboard/thingproxy
-    // works by proxying client-side API call through a server (could host your own proxy as well)
-    return "https://thingproxy.freeboard.io/fetch/" + url;
-  }
-  // if prod
-  return url;
+  const isDev = !location.hostname.endsWith("vandyhacks.org");
+  // bypass CORS issues in client-side API calls during localhost/dev, see https://github.com/Freeboard/thingproxy
+  return isDev ? "https://thingproxy.freeboard.io/fetch/" + url : url;
 }
 
 // clears input fields && sets visible
 function resetInputs() {
+  clearInputs();
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
   $("#checkboxes")[0].style.display = "block";
   elems.forEach(e => {
-    $(e).val(""); // clear field
     $(e)[0].style.display = "block"; // set visible
+  });
+}
+
+// clears input fields
+function clearInputs() {
+  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  elems.forEach(e => {
+    $(e).val(""); // clear field
   });
 }
 
