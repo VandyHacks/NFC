@@ -329,7 +329,7 @@ function clearInputs() {
 
 // toggle hiding elems
 function hideInputs(hide) {
-  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  const elems = ["#name", "#nfc", "#checkboxes"];
   elems.forEach(e => {
     dom(e).style.display = hide ? 'none' : 'block';
   });
