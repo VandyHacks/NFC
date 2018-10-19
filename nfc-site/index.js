@@ -2,8 +2,8 @@ let token = "";
 let id;
 let users;
 let events;
-let EVENT_ID = "";
-let EVENT_NAME = "";
+let EVENT_ID = null;
+let EVENT_NAME = null;
 
 const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
@@ -44,8 +44,8 @@ async function getEvents() {
   });
 
   hideInputs(true);
-  EVENT_ID = "";
-  EVENT_NAME = "";
+  EVENT_ID = null;
+  EVENT_NAME = null;
 }
 
 async function fetchUserData() {
@@ -55,9 +55,6 @@ async function fetchUserData() {
       headers: tokenHeader()
     });
     const json = await data.json();
-    if (EVENT_ID) {
-      hideInputs(false);
-    }
     users = json.users;
     console.log(`${users.length} users loaded.`);
   }
@@ -81,18 +78,19 @@ dom("#search-checkbox").addEventListener("change", () => {
 
 dom("#event-selector").addEventListener("change", () => {
   const index = dom("#event-selector").selectedIndex;
+  // clear inputs
+  clearInputs();
+  // if no event selected
   if (index === 0) {
     // if no event selected
     hideInputs(true);
-    EVENT_ID = "";
-    EVENT_NAME = "";
+    EVENT_ID = null;
+    EVENT_NAME = null;
     return;
   }
 
-  // reset inputs
-  clearInputs();  
+  // show inputs
   hideInputs(false);
-
 
   // have to subtract 1 to account for default choice (Choose event...)
   EVENT_ID = events[index - 1]._id;
@@ -231,12 +229,13 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
       headers: tokenHeader()
     });
     const json = await res.json();
-    clearInputs();
+    clearInputs(); // clear inputs if successful submit
     console.log(`ACTION: ${action}`);
     if (json.error) {
       dom("#student-info").innerHTML = JSON.stringify(json.error);
     }
     console.log(json);
+    // display matched user
     const match = users.filter(u => u.id === json)[0]
     if (match) {
       console.log(match)
