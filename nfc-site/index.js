@@ -43,7 +43,7 @@ async function getEvents() {
     dom("#event-selector").appendChild(newoption);
   });
 
-  setInputDisable(true);
+  hideInputs(true);
   EVENT_ID = "";
   EVENT_NAME = "";
 }
@@ -56,7 +56,7 @@ async function fetchUserData() {
     });
     const json = await data.json();
     if (EVENT_ID) {
-      setInputDisable(false);
+      hideInputs(false);
     }
     users = json.users;
     console.log(`${users.length} users loaded.`);
@@ -83,7 +83,7 @@ dom("#event-selector").addEventListener("change", () => {
   const index = dom("#event-selector").selectedIndex;
   if (index === 0) {
     // if no event selected
-    setInputDisable(true);
+    hideInputs(true);
     EVENT_ID = "";
     EVENT_NAME = "";
     return;
@@ -99,7 +99,7 @@ dom("#event-selector").addEventListener("change", () => {
   console.log("selected event name: ", EVENT_NAME);
 
   if (users) {
-    setInputDisable(false);
+    hideInputs(false);
   }
 
   // initializes focus for new event
@@ -341,10 +341,18 @@ function clearInputs() {
 }
 
 // toggles disabling input
+/*
 function setInputDisable(disable) {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
   elems.forEach(e => {
     dom(e).disabled = disable;
+  });
+}*/
+
+function hideInputs(hide) {
+  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
+  elems.forEach(e => {
+    dom(e).style.display = hide ? 'none' : 'block';
   });
 }
 
