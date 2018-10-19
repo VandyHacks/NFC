@@ -90,17 +90,15 @@ dom("#event-selector").addEventListener("change", () => {
   }
 
   // reset inputs
-  resetInputs();
+  clearInputs();  
+  hideInputs(false);
+
 
   // have to subtract 1 to account for default choice (Choose event...)
   EVENT_ID = events[index - 1]._id;
   EVENT_NAME = events[index - 1].name;
   console.log("selected event id: ", EVENT_ID);
   console.log("selected event name: ", EVENT_NAME);
-
-  if (users) {
-    hideInputs(false);
-  }
 
   // initializes focus for new event
   if (isCheckIn()) {
@@ -322,16 +320,6 @@ function transformURL(url) {
   return isDev ? "https://thingproxy.freeboard.io/fetch/" + url : url;
 }
 
-// clears input fields && sets visible
-function resetInputs() {
-  clearInputs();
-  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
-  dom("#checkboxes").style.display = "block";
-  elems.forEach(e => {
-    dom(e).style.display = "block"; // set visible
-  });
-}
-
 // clears input fields
 function clearInputs() {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
@@ -340,15 +328,7 @@ function clearInputs() {
   });
 }
 
-// toggles disabling input
-/*
-function setInputDisable(disable) {
-  const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
-  elems.forEach(e => {
-    dom(e).disabled = disable;
-  });
-}*/
-
+// toggle hiding elems
 function hideInputs(hide) {
   const elems = ["#name", "#nfc", "#unadmit-checkbox", "#search-checkbox"];
   elems.forEach(e => {
