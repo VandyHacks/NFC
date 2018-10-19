@@ -7,97 +7,49 @@
     <meta name="description" content="NFC NFC Form for VandyHacks 5">
     <meta name="author" content="VandyHacks">
     <title>VandyHacks V NFC Form</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<style>
-html, body, #maindiv {
-  background-color: rgb(60, 56, 80);
-  color: #e6e6e6;
-}
-.inputlabel {
-    width: 20%;
-}
-input {
-    width: 60%;
-    margin-left: 10%;
-    margin-right: 10%;
-}
-#maindiv {
-    width: 40%; 
-    display: none;
-}
-@media only screen and (max-width: 600px) {
-    #maindiv {
-      width: 100%;
-    }
-}
-#student-info {
-    white-space: pre
-}
-#auth {
-    padding: 1em;
-    height: 5em;
-    background-color: red;
-}
-
-#auth-label, #auth-button {
-    font-style: bold;
-    font: 20px;
-    color: white;
-    margin: auto;
-}
-
-.custom-checkbox {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-</style>
-</head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
 
   <body>
-    <div class="input-group" id="auth">
-      <input type="text" class="form-control" name="authcode" id="authcode" placeholder="Auth code">
-      <button class="btn btn-outline-secondary" id="auth-button">Submit</button>
+    <div id="auth">
+        <input type="text" name="authcode" id="authcode" placeholder="Auth code">
     </div>
 
-    <nav class="navbar">
-      <h1 class="mx-auto navbar-brand">VandyHacks V NFC Form</h1>
+    <nav>
+      <h1>VandyHacks V NFC Form</h1>
     </nav>
 
-    <div id='maindiv' class="container center-block">
-      <div class="row center-block">
-        <div class="col">
-          <div>
-            <select class="custom-select" id="event-selector">
-                <option selected>Choose Event...</option>
-            </select>
-          </div>
-          <br>
-          <div class="input-group">
-            <input type="text" class="form-control" name="name" id="name" placeholder="User Search">
-          </div>
-          <br>
-          <div class="input-group">
-            <input type="text" class="form-control" name="nfc" id="nfc" placeholder="NFC Code">
-          </div>
-          <br>
-          <div class="input-group" id="checkboxes">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="unadmit-checkbox">
-              <label class="custom-control-label" for="unadmit-checkbox"> Unadmit Mode</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" id="search-checkbox">
-              <label class="custom-control-label" for="search-checkbox"> Manual Search</label>
-            </div>
-          </div>
-          <br>
-          <div id="student-info">
-            <!-- populated on load -->
-          </div>
-          <br>
+    <div id='maindiv'>
+      <div class="input-group">
+        <select id="event-selector">
+            <option selected>Choose Event...</option>
+        </select>
+      </div>
+      <br>
+      <div class="input-group">
+        <input type="text" name="name" id="name" placeholder="User Search">
+      </div>
+      <br>
+      <div class="input-group">
+        <input type="text"  name="nfc" id="nfc" placeholder="NFC Code">
+      </div>
+      <br>
+      <div class="input-group" id="checkboxes">
+        <div>
+          <input type="checkbox" id="unadmit-checkbox">
+          <label> Unadmit Mode</label>
+        </div>
+        <div>
+          <input type="checkbox" id="search-checkbox">
+          <label> Manual Search</label>
         </div>
       </div>
+      <br>
+      <div id="student-info">
+        <!-- populated on load -->
+      </div>
+      <br>
     </div>
     <script src="dom.js"></script>
     <script src="index.js"></script>
