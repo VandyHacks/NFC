@@ -60,6 +60,7 @@ input:focus {
 }
 
 #authcode {
+    color: black;
     font-style: bold;
     font: 20px;
     margin: auto;
