@@ -279,7 +279,7 @@ function tokenHeader() {
 async function setToken() {
   console.log(token);
   try {
-    const res = { ok: true } || await fetch(
+    const res = await fetch(
       transformURL("https://apply.vandyhacks.org/auth/eventcode/"),
       {
         method: "POST",
