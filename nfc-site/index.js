@@ -66,6 +66,23 @@ async function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 
+dom("#unadmit-checkbox").addEventListener("change", () => {
+  const unadmitMode = dom("#unadmit-checkbox").checked;
+  // make user confirm they actually want to do this.
+  if (unadmitMode) {
+    const confirmation = confirm("Are you sure you want to UNADMIT users?");
+    if (!confirmation) {
+      dom("#unadmit-checkbox").checked = false;
+      return;
+    }
+  }
+  // turn entire page red as warning
+  const color = unadmitMode ? "rgb(139, 0, 0)" : "rgb(60, 56, 80)";
+  dom("#all").style.backgroundColor = color;
+  document.body.style.backgroundColor = color;
+  dom("#maindiv").style.backgroundColor = color;
+});
+
 dom("#search-checkbox").addEventListener("change", () => {
   // enable user to TOGGLE search bar visibility during non-checkin events
   if (isCheckIn()) {
@@ -262,7 +279,7 @@ function tokenHeader() {
 async function setToken() {
   console.log(token);
   try {
-    const res = await fetch(
+    const res = { ok: true } || await fetch(
       transformURL("https://apply.vandyhacks.org/auth/eventcode/"),
       {
         method: "POST",

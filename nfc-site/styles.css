@@ -62,7 +62,7 @@ input:focus {
     width: 100%;
     height: 3em;
     padding: 1em;
-    background-color: red;
+    background-color: rgba(139, 0, 0, 1);
 }
 
 #authcode {
