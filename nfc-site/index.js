@@ -335,7 +335,10 @@ function transformURL(url) {
 // clears input fields
 function clearInputs() {
   ["#name", "#nfc"].forEach(e => dom(e).value = ""); // clear fields
-  ["#unadmit-checkbox", "#search-checkbox"].forEach(e => dom(e).checked = false); // reset checkboxes
+  ["#unadmit-checkbox", "#search-checkbox"].forEach(e => {
+    dom(e).checked = false;
+    dom(e).onchange(); // fire event to update other stuff properly
+  }); // reset checkboxes
 }
 
 // toggle hiding elems
