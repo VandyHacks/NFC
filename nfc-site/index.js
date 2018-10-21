@@ -345,5 +345,5 @@ function hideInputs(hide) {
 }
 
 function isCheckIn() {
-  return EVENT && EVENT.type === "CheckIn";
+  return EVENT && EVENT.eventType === "CheckIn";
 }
