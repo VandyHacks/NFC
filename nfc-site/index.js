@@ -2,8 +2,7 @@ let token = "";
 let id;
 let users;
 let events;
-let EVENT_ID = null;
-let EVENT_NAME = null;
+let EVENT = null;
 
 const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
@@ -44,8 +43,7 @@ async function getEvents() {
   });
 
   hideInputs(true);
-  EVENT_ID = null;
-  EVENT_NAME = null;
+  EVENT = null;
 }
 
 async function fetchUserData() {
@@ -101,8 +99,7 @@ dom("#event-selector").addEventListener("change", () => {
   if (index === 0) {
     // if no event selected
     hideInputs(true);
-    EVENT_ID = null;
-    EVENT_NAME = null;
+    EVENT = null;
     return;
   }
 
@@ -110,10 +107,8 @@ dom("#event-selector").addEventListener("change", () => {
   hideInputs(false);
 
   // have to subtract 1 to account for default choice (Choose event...)
-  EVENT_ID = events[index - 1]._id;
-  EVENT_NAME = events[index - 1].name;
-  console.log("selected event id: ", EVENT_ID);
-  console.log("selected event name: ", EVENT_NAME);
+  EVENT = events[index - 1];
+  console.log("selected event: ", JSON.stringify(EVENT));
 
   // initializes focus for new event
   if (isCheckIn()) {
@@ -237,7 +232,7 @@ async function setPair(nfc) {
  */
 async function setAdmitAttendee(id, isNFC, admitStatus) {
   const action = admitStatus ? "admit" : "unadmit";
-  let URL = `${EVENT_URL}/${EVENT_ID}/${action}/${id}`;
+  let URL = `${EVENT_URL}/${EVENT._id}/${action}/${id}`;
   if (isNFC) {
     URL += "?type=nfc";
   }
@@ -350,6 +345,5 @@ function hideInputs(hide) {
 }
 
 function isCheckIn() {
-  // TODO: change to actual name for prod
-  return EVENT_NAME === "test-check-in";
+  return EVENT && EVENT.type === "CheckIn";
 }
