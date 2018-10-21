@@ -8,6 +8,13 @@ const API_URL = "https://apply.vandyhacks.org/api";
 const EVENT_URL = `${API_URL}/events`;
 const NFC_CODE_MIN_LENGTH = 5; // prevent accidental key press submission
 
+const COLORS = {
+  GREEN: 'rgb(80, 187, 80)',
+  RED: 'rgb(139, 0, 0)',
+  LIGHT: 'rgb(230, 230, 230)',
+  DARK: 'rgb(60, 56, 80)'
+}
+
 window.onload = e => {
   setInterval(() => {
     getEvents().catch(err => console.error(err));
@@ -75,10 +82,7 @@ function unadmitCheckboxChanged() {
     }
   }
   // turn entire page red as warning
-  const color = unadmitMode ? "rgb(139, 0, 0)" : "rgb(60, 56, 80)";
-  dom("#all").style.backgroundColor = color;
-  document.body.style.backgroundColor = color;
-  dom("#maindiv").style.backgroundColor = color;
+  dom("#all").style.backgroundColor = unadmitMode ? COLORS.RED : COLORS.DARK;
 };
 
 function searchCheckboxChanged() {
@@ -313,12 +317,7 @@ dom("#authcode").addEventListener("keyup", e => {
 
 // sets color of student output
 function colorLastUser(isLastUser) {
-  let colors = ['#308030', '#000000'];
-  let darkMode = true;
-  if (darkMode) {
-    colors = ['#50bb50', '#e6e6e6'];
-  }
-  dom("#student-info").style.color = isLastUser ? colors[0]: colors[1];
+  dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.LIGHT;
 }
 
 function transformURL(url) {

@@ -1,4 +1,4 @@
-html, body, #maindiv {
+html {
     background-color: rgb(60, 56, 80);
     color: #e6e6e6;
     font-family: 'Roboto', sans-serif;
@@ -34,7 +34,7 @@ input[type=text], select {
 input:focus {
     box-shadow: 0 0 5px rgba(81, 203, 238, 1);
     padding: 3px 0px 3px 3px;
-    border: 2px solid rgba(81, 203, 238, 1);
+    border: 3px solid rgba(81, 203, 238, 1);
     border-radius: 2px;
 }
 
