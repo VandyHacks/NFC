@@ -66,7 +66,7 @@ async function fetchUserData() {
 /**************************************************************************************************/
 /***************************************** Handle interactions ************************************/
 
-dom("#unadmit-checkbox").addEventListener("change", () => {
+function unadmitCheckboxChanged() {
   const unadmitMode = dom("#unadmit-checkbox").checked;
   // make user confirm they actually want to do this.
   if (unadmitMode) {
@@ -81,9 +81,9 @@ dom("#unadmit-checkbox").addEventListener("change", () => {
   dom("#all").style.backgroundColor = color;
   document.body.style.backgroundColor = color;
   dom("#maindiv").style.backgroundColor = color;
-});
+};
 
-dom("#search-checkbox").addEventListener("change", () => {
+function searchCheckboxChanged() {
   // enable user to TOGGLE search bar visibility during non-checkin events
   if (isCheckIn()) {
     return;
@@ -91,7 +91,7 @@ dom("#search-checkbox").addEventListener("change", () => {
   const showSearch = dom("#search-checkbox").checked;
   dom("#name").style.display = showSearch ? "block" : "none";
   dom("#nfc").style.display = showSearch ? "none" : "block";
-});
+};
 
 dom("#event-selector").addEventListener("change", () => {
   const index = dom("#event-selector").selectedIndex;
