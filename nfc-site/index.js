@@ -56,10 +56,7 @@ async function getEvents() {
 async function fetchUserData() {
   const USERS_URL = `${API_URL}/users/condensed`; // condensed users json
   try {
-    const data = await fetch(transformURL(USERS_URL), {
-      headers: tokenHeader()
-    });
-    const json = await data.json();
+    const json = await authorizedJSONFetch(USERS_URL)
     users = json.users;
     console.log(`${users.length} users loaded.`);
   }
@@ -99,6 +96,7 @@ dom("#event-selector").addEventListener("change", () => {
   const index = dom("#event-selector").selectedIndex;
   // clear inputs
   clearInputs();
+  clearCheckBoxes();
   // if no event selected
   if (index === 0) {
     // if no event selected
@@ -241,10 +239,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     URL += "?type=nfc";
   }
   try {
-    const res = await fetch(transformURL(URL), {
-      headers: tokenHeader()
-    });
-    const json = await res.json();
+    const json = await authorizedJSONFetch(URL)
     clearInputs(); // clear inputs if successful submit
     console.log(`ACTION: ${action}`);
     if (json.error) {
@@ -267,11 +262,11 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
 /*********************************** Authorization stuff ******************************************/
 
 // constructs a HTTP header with JWT token to authorize GET requests
-function tokenHeader() {
-  return new Headers({
-    method: "GET",
-    "x-event-secret": token
+async function authorizedJSONFetch(url) {
+  const res = await fetch(transformURL(url), {
+    headers:new Headers({ "x-event-secret": token })
   });
+  return await res.json();
 }
 
 // set auth JWT token
@@ -326,13 +321,14 @@ function transformURL(url) {
   return isDev ? "https://thingproxy.freeboard.io/fetch/" + url : url;
 }
 
-// clears input fields
 function clearInputs() {
-  ["#name", "#nfc"].forEach(e => dom(e).value = ""); // clear fields
+  ["#name", "#nfc"].forEach(e => dom(e).value = "");
+}
+function clearCheckBoxes() {
   ["#unadmit-checkbox", "#search-checkbox"].forEach(e => {
     dom(e).checked = false;
     dom(e).onchange(); // fire event to update other stuff properly
-  }); // reset checkboxes
+  });
 }
 
 // toggle hiding elems
