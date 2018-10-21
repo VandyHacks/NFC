@@ -40,7 +40,7 @@ async function getEvents() {
     JSON.stringify([...events.map(e => e._id)].sort()) ===
     JSON.stringify([...json.map(e => e._id)].sort())
   }
-  if (noNewEvents) {
+  if (noNewEvents()) {
     console.log("Fetched events, no need to refresh.");
     return;
   }
