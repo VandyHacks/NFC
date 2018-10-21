@@ -35,7 +35,7 @@ async function getEvents() {
     delete event.attendees;
     return event;
   });
-  if (JSON.stringify(events.map(e => e._id).sort()) === 
+  if (events && JSON.stringify(events.map(e => e._id).sort()) === 
     JSON.stringify(json.map(e => e._id).sort())) {
     console.log("Fetched events, no need to refresh.");
     return;
