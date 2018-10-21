@@ -97,6 +97,7 @@ dom("#event-selector").addEventListener("change", () => {
   // clear inputs
   clearInputs();
   clearCheckBoxes();
+  clearOutput();
   // if no event selected
   if (index === 0) {
     // if no event selected
@@ -130,7 +131,7 @@ dom("#name").addEventListener("keyup", e => {
   id = undefined; // reset id
   const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
-    dom("#student-info").innerHTML = "";
+    clearOutput();
     return;
   }
   let criteria = user => {
@@ -173,7 +174,7 @@ dom("#name").addEventListener("keyup", e => {
 });
 
 // On nfc code submission
-dom("#nfc").addEventListener("keyup", e => {
+dom("#nfc").addEventListener("keyup", async e => {
   colorLastUser(false);
   if (e.keyCode !== 13) {
     return;
@@ -186,13 +187,15 @@ dom("#nfc").addEventListener("keyup", e => {
   }
   if (isCheckIn()) {
     // during check-in, pair + admit into "check-in" event
-    return setPair(nfcCode)
-      .then(() => {
-        console.log("Paired successfully.");
-        setAdmitAttendee(nfcCode, true, true);
-        dom("#name").focus(); // during check-in: switch focus back to name for next submission
-      })
-      .catch(err => console.error(err));
+    try {
+      await setPair(nfcCode);
+      console.log("Paired successfully.");
+      await setAdmitAttendee(nfcCode, true, true);
+      dom("#name").focus(); // during check-in: switch focus back to name for next submission
+    }
+    catch (err) {
+      return console.error(err);
+    }
   }
   // else if not check-in event:
   const admit = !dom("#unadmit-checkbox").checked;
@@ -329,6 +332,9 @@ function clearCheckBoxes() {
     dom(e).checked = false;
     dom(e).onchange(); // fire event to update other stuff properly
   });
+}
+function clearOutput() {
+  dom("#student-info").innerHTML = "";
 }
 
 // toggle hiding elems
