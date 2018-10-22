@@ -325,13 +325,14 @@ function processErrors(json) {
   if (!err_msg)
     return false;
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  err_msg = JSON.stringify(err_msg, null, "\t").replace(IDRegex, err_msg.id ? IdToEmail(err_msg.id) : 'unknown')
+  err_msg = JSON.stringify(err_msg, null, "\t").replace(IDRegex, match => IdToEmail(match))
   dom("#student-info").innerHTML = err_msg;
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
 function IdToEmail(id) {
-  return users.filter(u => u.id === id)[0].email;
+  const arr = users.filter(u => u.id === id);
+  return arr[0] ? arr[0].email : 'unknown_email';
 }
 
 // sets color of student output
