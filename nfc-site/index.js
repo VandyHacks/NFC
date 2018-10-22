@@ -228,11 +228,7 @@ async function setPair(nfc) {
       })
     });
     const json = await res.json();
-    const err_msg = json.message || json.error;
-    if (err_msg) {
-      dom("#student-info").innerHTML = JSON.stringify(err_msg, null, "\t");
-      return Promise.reject(err_msg);
-    }
+    processErrors(json);
     return console.log("Pair result: " + JSON.stringify(json));
   } catch (err) {
     return console.error(err);
@@ -256,11 +252,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     console.log(json);
     clearInputs(); // clear inputs if successful submit
     console.log(`ACTION: ${action}`);
-    const err_msg = json.message || json.error;
-    if (err_msg) {
-      dom("#student-info").innerHTML = JSON.stringify(err_msg, null, "\t");
-      return Promise.reject(err_msg);
-    }
+    processErrors(json);
     // display matched user
     const match = users.filter(u => u.id === json)[0]
     if (match) {
@@ -324,6 +316,20 @@ dom("#authcode").addEventListener("keyup", e => {
 
 /**************************************************************************************************/
 /****************************************** Utils *************************************************/
+
+function processErrors(json) {
+  let err_msg = json.message || json.error;
+  if (!err_msg)
+    return;
+  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
+  err_msg = err_msg.replace(IDRegex, err_msg.id ? IdToEmail(err_msg.id) : 'unknown')
+  
+  dom("#student-info").innerHTML = JSON.stringify(err_msg, null, "\t");
+}
+// gets the email of user with a given ID (for friendly display)
+function IdToEmail(id) {
+  return users.filter(u => u.id === id)[0].email;
+}
 
 // sets color of student output
 function colorLastUser(isLastUser) {
