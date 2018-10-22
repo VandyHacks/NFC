@@ -228,6 +228,10 @@ async function setPair(nfc) {
       })
     });
     const json = await res.json();
+    if (json.error || json.message) {
+      dom("#student-info").innerHTML = JSON.stringify(json);
+      return Promise.reject(json);
+    }
     return console.log("Pair result: " + JSON.stringify(json));
   } catch (err) {
     return console.error(err);
@@ -248,12 +252,13 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
   }
   try {
     const json = await authorizedJSONFetch(URL)
+    console.log(json);
     clearInputs(); // clear inputs if successful submit
     console.log(`ACTION: ${action}`);
-    if (json.error) {
-      dom("#student-info").innerHTML = JSON.stringify(json.error);
+    if (json.error || json.message) {
+      dom("#student-info").innerHTML = JSON.stringify(json);
+      return Promise.reject(json);
     }
-    console.log(json);
     // display matched user
     const match = users.filter(u => u.id === json)[0]
     if (match) {
