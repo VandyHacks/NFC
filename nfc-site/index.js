@@ -322,9 +322,9 @@ function processErrors(json) {
   if (!err_msg)
     return;
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  err_msg = err_msg.replace(IDRegex, err_msg.id ? IdToEmail(err_msg.id) : 'unknown')
+  err_msg = JSON.stringify(err_msg, null, "\t").replace(IDRegex, err_msg.id ? IdToEmail(err_msg.id) : 'unknown')
   
-  dom("#student-info").innerHTML = JSON.stringify(err_msg, null, "\t");
+  dom("#student-info").innerHTML = err_msg;
 }
 // gets the email of user with a given ID (for friendly display)
 function IdToEmail(id) {
