@@ -1,10 +1,13 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
 html {
     background-color: rgb(60, 56, 80);
     color: #e6e6e6;
     font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
 }
 
 .inputlabel {
