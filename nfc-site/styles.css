@@ -9,18 +9,8 @@ html {
     font-family: 'Roboto', sans-serif;
 }
 
-#checkboxes {
-    margin-top: 5px;
-}
-
 #maindiv {
     display: none;
-}
-
-@media only screen and (max-width: 600px) {
-    #maindiv {
-    width: 100%;
-    }
 }
 
 #student-info {
@@ -70,3 +60,56 @@ html {
 	resize:none;
 	overflow: hidden;
 }
+
+.styled-checkbox {
+    position: absolute;
+    opacity: 0;
+}
+.styled-checkbox + label {
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+}
+.styled-checkbox + label:before {
+    content: '';
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+    vertical-align: text-top;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 1px solid gray;
+}
+  .styled-checkbox:hover + label:before {
+    background: #f35429;
+}
+  .styled-checkbox:focus + label:before {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
+  .styled-checkbox:checked + label:before {
+    background: #f35429;
+}
+.styled-checkbox:checked + label:after {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 9px;
+    background: white;
+    width: 2px;
+    height: 2px;
+    box-shadow: 2px 0 0 white, 4px 0 0 white, 4px -2px 0 white, 4px -4px 0 white, 4px -6px 0 white, 4px -8px 0 white;
+    -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+}
+
+@media only screen and (max-width: 600px) {
+    .form-style-8 {
+        margin: 5% auto;
+    }
+}
+
+#checkboxes {
+    padding-top: 10px;
+}
+
