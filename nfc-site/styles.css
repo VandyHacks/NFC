@@ -14,15 +14,15 @@ html {
 }
 
 #student-info {
-    padding-top: 20px;
+    padding-top: 10px
     white-space: pre;
-    margin: 15px -30px 0px -30px;
+    margin: 0px -30px 0px -30px;
 }
 
 .user-entry {
     white-space: pre;
     background: #fbf7f5;
-    border-top: 3px solid rgb(60, 56, 80);
+    border-top: 4px solid rgb(60, 56, 80);
     padding: 15px;
     margin: 0px;
 }
@@ -31,7 +31,7 @@ html {
     font-family: 'Roboto', arial, sans;
     width: 80%;
     max-width: 500px;
-    padding: 30px 30px 0px 30px;
+    padding: 30px 30px -15px 30px;
     background: #fbf7f5;
     margin: 50px auto;
     box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.33);
@@ -91,13 +91,13 @@ html {
     background: white;
     border: 1px solid gray;
 }
-  .styled-checkbox:hover + label:before {
+.styled-checkbox:hover + label:before {
     background: #f35429;
 }
-  .styled-checkbox:focus + label:before {
+.styled-checkbox:focus + label:before {
     box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
 }
-  .styled-checkbox:checked + label:before {
+.styled-checkbox:checked + label:before {
     background: #f35429;
 }
 .styled-checkbox:checked + label:after {
