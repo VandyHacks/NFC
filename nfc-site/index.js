@@ -378,9 +378,9 @@ function displayUsers(json) {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    let text = "Name:\t${user[name]}\n"
-               "School:\t${user[school]}\n"
-               "Email:\t${user[email]}\n"
+    let text = `Name:\t${user[name]}\n\
+                School:\t${user[school]}\n\
+                Email:\t${user[email]}\n`
     entry.textContent = text;
   });
 }
