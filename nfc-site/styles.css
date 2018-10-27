@@ -19,7 +19,8 @@ html {
 
 .user-entry {
     white-space: pre;
-    background: green;
+    background: #fbf7f5;
+    border: 1px solid grey;
 }
 
 .form-style-8{
