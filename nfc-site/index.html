@@ -12,37 +12,36 @@
   </head>
 
   <body>
-    <div id="auth">
-        <input type="text" name="authcode" id="authcode" placeholder="Auth code">
-    </div>
-
-    <!-- <nav>
-      <h1>VandyHacks V NFC Form</h1>
-    </nav> -->
-
-    <div id='maindiv' class="form-style-8">
+    <div class="form-style-8">
       <h2>VandyHacks V NFC Form</h2>
       <form>
-      <div class="input-group">
-        <select id="event-selector">
-            <option selected>Choose Event...</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <input type="text" name="name" id="name" placeholder="User Search">
-      </div>
-      <div class="input-group">
-        <input type="text"  name="nfc" id="nfc" placeholder="NFC Code">
-      </div>
-      <div class="input-group" id="checkboxes">
-        <span>
-          <input type="checkbox" id="search-checkbox" onchange="searchCheckboxChanged()">
-          <label> Manual Search</label>
-        </span>
-        <span>
-          <input type="checkbox" id="unadmit-checkbox" onchange="unadmitCheckboxChanged()">
-          <label> Unadmit Mode</label>
-        </span>
+        <div id="auth">
+          <div class="input-group">
+            <input type="text" name="authcode" id="authcode" placeholder="Auth code">
+          </div>
+        </div>
+        <div id="maindiv">
+          <div class="input-group">
+            <select id="event-selector">
+                <option selected>Choose Event...</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <input type="text" name="name" id="name" placeholder="User Search">
+          </div>
+          <div class="input-group">
+            <input type="text"  name="nfc" id="nfc" placeholder="NFC Code">
+          </div>
+          <div class="input-group" id="checkboxes">
+            <span>
+              <input type="checkbox" id="search-checkbox" onchange="searchCheckboxChanged()">
+              <label> Manual Search</label>
+            </span>
+            <span>
+              <input type="checkbox" id="unadmit-checkbox" onchange="unadmitCheckboxChanged()">
+              <label> Unadmit Mode</label>
+            </span>
+          </div>
         </form>
       </div>
       <br>
