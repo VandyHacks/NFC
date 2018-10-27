@@ -14,15 +14,18 @@ html {
 }
 
 #student-info {
+    padding-top: 10px;
     white-space: pre;
+    width: 100%;
 }
 
 .user-entry {
     white-space: pre;
     background: #fbf7f5;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
+    border-top: 1px solid grey;
+    padding: 10px;
+    width: 100%;
+    margin: 0;
 }
 
 .form-style-8{
