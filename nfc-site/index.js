@@ -12,7 +12,8 @@ const COLORS = {
   GREEN: 'rgb(80, 187, 80)',
   RED: 'rgb(139, 0, 0)',
   LIGHT: 'rgb(230, 230, 230)',
-  DARK: 'rgb(60, 56, 80)'
+  DARK: 'rgb(60, 56, 80)',
+  BLACK: 'rgb(0, 0, 0)',
 }
 
 window.onload = e => {
@@ -337,7 +338,7 @@ function IdToEmail(id) {
 
 // sets color of student output
 function colorLastUser(isLastUser) {
-  dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.LIGHT;
+  dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.BLACK;
 }
 
 function transformURL(url) {
