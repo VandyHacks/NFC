@@ -29,7 +29,8 @@ html {
 
 .form-style-8{
 	font-family: 'Roboto', arial, sans;
-    width: 500px;
+    width: 80%;
+    max-width: 500px;
 	padding: 30px;
     background: #fbf7f5;
 	margin: 50px auto;
