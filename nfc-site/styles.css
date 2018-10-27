@@ -20,7 +20,7 @@ html {
 .user-entry {
     white-space: pre;
     background: #fbf7f5;
-    border: 1px solid grey;
+    border-bottom: 1px solid #ddd;
 }
 
 .form-style-8{
