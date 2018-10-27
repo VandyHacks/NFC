@@ -16,7 +16,7 @@ html {
 #student-info {
     padding-top: 20px;
     white-space: pre;
-    margin: 15px 0px 30px -30px;
+    margin: 15px 0px -30px -30px;
 }
 
 .user-entry {
