@@ -374,7 +374,7 @@ function isCheckIn() {
 
 function displayUsers(json) {
   json.forEach(user => {
-    let entry = dom("#student-info").createElement("div")
+    let entry = dom("#student-info").appendChild("div")
     entry.className = "user-entry"
     entry.innerHTML = JSON.stringify(user)
   });
