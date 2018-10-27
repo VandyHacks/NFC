@@ -17,6 +17,11 @@ html {
     white-space: pre;
 }
 
+.user-entry {
+    white-space: pre;
+    background: green;
+}
+
 .form-style-8{
     font-family: 'Roboto', arial, sans;
     width: 80%;

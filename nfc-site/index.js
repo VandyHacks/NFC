@@ -159,7 +159,7 @@ dom("#name").addEventListener("keyup", e => {
     ...e,
     id: undefined
   })); // deep-copy, remove ids from display
-  dom("#student-info").innerHTML = JSON.stringify(matches_condensed, null, "\t");
+  displayUsers(matches_condensed);
 
   if (matches.length === 0) {
     return;
@@ -370,4 +370,12 @@ function hideInputs(hide) {
 
 function isCheckIn() {
   return EVENT && EVENT.eventType === "CheckIn";
+}
+
+function displayUsers(json) {
+  json.forEach(user => {
+    let entry = dom("#student-info").createElement("div")
+    entry.className = "user-entry"
+    entry.innerHTML = JSON.stringify(user)
+  });
 }
