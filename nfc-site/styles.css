@@ -21,7 +21,7 @@ html {
 
 .user-entry {
     white-space: pre;
-    background: #fbf7f5;
+    background: rgb(60, 56, 80);
     border-top: 1px solid #ddd;
     padding: 15px;
     margin: 0px;
@@ -60,7 +60,7 @@ html {
     width: 100%;
     padding: 7px;
     border: none;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #bbb;
     background: transparent;
     margin-bottom: 10px;
     font: 16px Arial, Helvetica, sans-serif;
