@@ -373,10 +373,11 @@ function isCheckIn() {
 }
 
 function displayUsers(json) {
+  clearOutput()
   json.forEach(user => {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    entry.innerHTML = JSON.stringify(user)
+    entry.innerHTML = JSON.stringify(user, null, "\t").replace("{|}","")
   });
 }
