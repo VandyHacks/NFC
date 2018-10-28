@@ -325,9 +325,7 @@ function processErrors(json) {
   let err_msg = json.message || json.error;
   if (!err_msg)
     return false;
-  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  err_msg = JSON.stringify(err_msg, null, "\t").replace(IDRegex, match => IdToEmail(match))
-  dom("#student-info").innerHTML = err_msg;
+  displayError(json);
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
@@ -370,6 +368,22 @@ function hideInputs(hide) {
 
 function isCheckIn() {
   return EVENT && EVENT.eventType === "CheckIn";
+}
+
+function displayError(json) {
+  clearOutput()
+  let entry = document.createElement("div")
+  dom("#student-info").appendChild(entry)
+  entry.className = "user-entry"
+  let text;
+  if (json.error) {
+    text += `\tError:\t${json.error}\n`
+  }
+  if (json.message) {
+    text += `\tMessage:\t${json.message}\n`
+  }
+  text += `\tId:\t${json.id}`
+  entry.textContent = text;
 }
 
 function displayUsers(json) {
