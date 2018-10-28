@@ -384,7 +384,7 @@ function displayError(json) {
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
   entry.className = "user-entry"
-  let text = `\tMessage:\t${json.message}\n\tId:\t\t\t${IdToEmail(json.id)}`
+  let text = `Message: ${json.message}\nId: ${IdToEmail(json.id)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
   text = text.replace(IDRegex, match => IdToEmail(match))
   entry.innerHTML = text;
@@ -396,7 +396,7 @@ function displayUsers(json) {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    let text = `\tName:\t${user.name}\n\tSchool:\t${user.school}\n\tEmail:\t${user.email}`
+    let text = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}`
     entry.innerHTML = text;
   });
 }
