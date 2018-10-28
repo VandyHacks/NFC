@@ -348,7 +348,7 @@ function IdToEmail(id) {
 // sets color of student output
 function colorCardResult(color) {
   // dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.BLACK;
-  dom("#user-entry").style.background = color;
+  dom(".user-entry").style.background = color;
 }
 
 function transformURL(url) {
