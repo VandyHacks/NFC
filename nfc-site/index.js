@@ -260,7 +260,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     const match = users.filter(u => u.id === json)[0]
     if (match) {
       console.log(match)
-      dom("#student-info").innerHTML = JSON.stringify(match, null, "\t");
+      displayUsers(match)
       colorLastUser(true);
     }
   } catch (err) {
