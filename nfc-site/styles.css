@@ -9,10 +9,6 @@ html {
     font-family: 'Roboto', sans-serif;
 }
 
-#maindiv {
-    display: none;
-}
-
 #student-info {
     padding-top: 10px;
     white-space: pre;
