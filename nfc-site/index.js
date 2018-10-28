@@ -375,14 +375,7 @@ function displayError(json) {
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
   entry.className = "user-entry"
-  let text;
-  if (json.error) {
-    text += `\tError:\t${json.error}\n`
-  }
-  if (json.message) {
-    text += `\tMessage:\t${json.message}\n`
-  }
-  text += `\tId:\t${json.id}`
+  let text = `\tMessage:\t${json.message}\n\tId:\t${IdToEmail(json.id)}`
   entry.textContent = text;
 }
 
