@@ -9,10 +9,6 @@ html {
     font-family: 'Roboto', sans-serif;
 }
 
-#maindiv {
-    display: none;
-}
-
 #student-info {
     padding-top: 10px;
     white-space: pre;
@@ -20,12 +16,12 @@ html {
 }
 
 .user-entry {
-    white-space: pre;
+    white-space: pre-wrap;
     background: #fbf7f5;
     border-top: 4px solid rgb(60, 56, 80);
     padding: 15px;
+    padding-left: 30px;
     margin: 0px;
-    word-wrap: break-word;
 }
 
 .form-style-8{

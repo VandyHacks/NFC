@@ -25,6 +25,14 @@ window.onload = e => {
   getEvents().catch(err => console.error(err));
 };
 
+window.onresize = () => {
+  if (window.innerHeight < 500 && dom("#maindiv").style.display != "none") {
+    dom("#formheader").style.display = "none";
+  } else {
+    dom("#formheader").style.display = "block";
+  }
+}
+
 /**************************************************************************************************/
 /******************** Functions to get users and events *******************************************/
 
@@ -260,7 +268,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     const match = users.filter(u => u.id === json)[0]
     if (match) {
       console.log(match)
-      dom("#student-info").innerHTML = JSON.stringify(match, null, "\t");
+      displayUsers([match])
       colorLastUser(true);
     }
   } catch (err) {
@@ -376,7 +384,7 @@ function displayError(json) {
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
   entry.className = "user-entry"
-  let text = `\tError:\t${json.message}\n\tUser:\t\t\t${IdToEmail(json.id)}`
+  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
   text = text.replace(IDRegex, match => IdToEmail(match))
   entry.innerHTML = text;
@@ -388,7 +396,7 @@ function displayUsers(json) {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    let text = `\tName:\t${user.name}\n\tSchool:\t${user.school}\n\tEmail:\t${user.email}`
+    let text = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}`
     entry.innerHTML = text;
   });
 }
