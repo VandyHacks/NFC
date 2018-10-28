@@ -14,6 +14,8 @@ const COLORS = {
   LIGHT: 'rgb(230, 230, 230)',
   DARK: 'rgb(60, 56, 80)',
   BLACK: 'rgb(0, 0, 0)',
+
+  OFFWHITE: '#fbf7f5',
 }
 
 window.onload = e => {
@@ -141,7 +143,7 @@ dom("#event-selector").addEventListener("change", () => {
 
 // Displays user of corresponding fuzz match
 dom("#name").addEventListener("keyup", e => {
-  colorLastUser(false);
+  colorCardResult(OFFWHITE);
   id = undefined; // reset id
   const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
@@ -189,7 +191,7 @@ dom("#name").addEventListener("keyup", e => {
 
 // On nfc code submission
 dom("#nfc").addEventListener("keyup", async e => {
-  colorLastUser(false);
+  colorCardResult(OFFWHITE)
   if (e.keyCode !== 13) {
     return;
   }
@@ -269,7 +271,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     if (match) {
       console.log(match)
       displayUsers([match])
-      colorLastUser(true);
+      colorCardResult(GREEN)
     }
   } catch (err) {
     return console.error(err);
@@ -334,6 +336,7 @@ function processErrors(json) {
   if (!err_msg)
     return false;
   displayError(err_msg);
+  colorCardResult(RED);
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
@@ -343,8 +346,9 @@ function IdToEmail(id) {
 }
 
 // sets color of student output
-function colorLastUser(isLastUser) {
-  dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.BLACK;
+function colorCardResult(color) {
+  // dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.BLACK;
+  dom("#user-entry").style.background = color;
 }
 
 function transformURL(url) {
