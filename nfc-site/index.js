@@ -378,7 +378,7 @@ function displayError(json) {
   entry.className = "user-entry"
   let text = `\tMessage:\t${json.message}\n\tId:\t\t\t${IdToEmail(match)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  text.replace(IDRegex, match => "\n\t\t\t" + IdToEmail(match))
+  text.replace(IDRegex, match => {"\n\t\t\t" + IdToEmail(match)})
   entry.textContent = text;
 }
 
