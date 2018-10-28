@@ -143,7 +143,7 @@ dom("#event-selector").addEventListener("change", () => {
 
 // Displays user of corresponding fuzz match
 dom("#name").addEventListener("keyup", e => {
-  colorCardResult(OFFWHITE);
+  colorCardResult(COLORS.OFFWHITE);
   id = undefined; // reset id
   const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
@@ -191,7 +191,7 @@ dom("#name").addEventListener("keyup", e => {
 
 // On nfc code submission
 dom("#nfc").addEventListener("keyup", async e => {
-  colorCardResult(OFFWHITE)
+  colorCardResult(COLORS.OFFWHITE)
   if (e.keyCode !== 13) {
     return;
   }
@@ -271,7 +271,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     if (match) {
       console.log(match)
       displayUsers([match])
-      colorCardResult(GREEN)
+      colorCardResult(COLORS.GREEN)
     }
   } catch (err) {
     return console.error(err);
@@ -336,7 +336,7 @@ function processErrors(json) {
   if (!err_msg)
     return false;
   displayError(err_msg);
-  colorCardResult(RED);
+  colorCardResult(COLORS.RED);
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
