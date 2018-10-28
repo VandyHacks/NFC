@@ -325,7 +325,7 @@ function processErrors(json) {
   let err_msg = json.message || json.error;
   if (!err_msg)
     return false;
-  displayError(json);
+  displayError(err_msg);
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
