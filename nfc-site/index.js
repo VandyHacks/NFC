@@ -378,8 +378,8 @@ function displayError(json) {
   entry.className = "user-entry"
   let text = `\tMessage:\t${json.message}\n\tId:\t\t\t${IdToEmail(json.id)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  text = text.replace(IDRegex, match => `\n\t\t\t\t${IdToEmail(match)}`)
-  entry.textContent = text;
+  text = text.replace(IDRegex, match => IdToEmail(match))
+  entry.innerHTML = text;
 }
 
 function displayUsers(json) {
@@ -389,6 +389,6 @@ function displayUsers(json) {
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
     let text = `\tName:\t${user.name}\n\tSchool:\t${user.school}\n\tEmail:\t${user.email}`
-    entry.textContent = text;
+    entry.innerHTML = text;
   });
 }
