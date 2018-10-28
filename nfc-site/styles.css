@@ -25,6 +25,7 @@ html {
     border-top: 4px solid rgb(60, 56, 80);
     padding: 15px;
     margin: 0px;
+    word-wrap: break-word;
 }
 
 .form-style-8{
