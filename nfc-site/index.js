@@ -376,7 +376,9 @@ function displayError(json) {
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
   entry.className = "user-entry"
-  let text = `\tMessage:\t${json.message}\n\tId:\t\t\t${IdToEmail(json.id)}`
+  let text = `\tMessage:\t${json.message}\n\tId:\t\t\t${IdToEmail(match)}`
+  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
+  text.replace(IDRegex, match => "\n\t\t\t" + IdToEmail(match))
   entry.textContent = text;
 }
 
