@@ -354,7 +354,7 @@ function colorCardResult(color) {
 function transformURL(url) {
   const isDev = !location.hostname.endsWith("vandyhacks.org");
   // bypass CORS issues in client-side API calls during localhost/dev, see https://github.com/Freeboard/thingproxy
-  return isDev ? "https://thingproxy.freeboard.io/fetch/" + url : url;
+  return isDev ? "https://cors-anywhere.herokuapp.com/" + url : url;
 }
 
 function clearInputs() {
@@ -388,7 +388,7 @@ function displayError(json) {
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
   entry.className = "user-entry"
-  let text = `Message: ${json.message}\nId: ${IdToEmail(json.id)}`
+  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
   text = text.replace(IDRegex, match => IdToEmail(match))
   entry.innerHTML = text;
