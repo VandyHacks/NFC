@@ -26,10 +26,10 @@ window.onload = e => {
 };
 
 window.onresize = () => {
-  if (window.innerHeight < 500 && dom("#main-div").style.display != "none") {
-    dom("formheader").style.display = "none";
+  if (window.innerHeight < 500 && dom("#maindiv").style.display != "none") {
+    dom("#formheader").style.display = "none";
   } else {
-    dom("formheader").style.display = "block";
+    dom("#formheader").style.display = "block";
   }
 }
 
