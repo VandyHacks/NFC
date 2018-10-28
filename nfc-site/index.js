@@ -14,8 +14,6 @@ const COLORS = {
   LIGHT: 'rgb(230, 230, 230)',
   DARK: 'rgb(60, 56, 80)',
   BLACK: 'rgb(0, 0, 0)',
-
-  OFFWHITE: '#fbf7f5',
 }
 
 window.onload = e => {
@@ -143,7 +141,6 @@ dom("#event-selector").addEventListener("change", () => {
 
 // Displays user of corresponding fuzz match
 dom("#name").addEventListener("keyup", e => {
-  colorCardResult(COLORS.OFFWHITE);
   id = undefined; // reset id
   const INPUT = dom("#name").value.toLowerCase();
   if (INPUT.length === 0) {
@@ -191,7 +188,6 @@ dom("#name").addEventListener("keyup", e => {
 
 // On nfc code submission
 dom("#nfc").addEventListener("keyup", async e => {
-  colorCardResult(COLORS.OFFWHITE)
   if (e.keyCode !== 13) {
     return;
   }
@@ -270,8 +266,7 @@ async function setAdmitAttendee(id, isNFC, admitStatus) {
     const match = users.filter(u => u.id === json)[0]
     if (match) {
       console.log(match)
-      displayUsers([match])
-      colorCardResult(COLORS.GREEN)
+      displaySuccess(match)
     }
   } catch (err) {
     return console.error(err);
@@ -336,19 +331,12 @@ function processErrors(json) {
   if (!err_msg)
     return false;
   displayError(err_msg);
-  colorCardResult(COLORS.RED);
   return true;
 }
 // gets the email of user with a given ID (for friendly display)
 function IdToEmail(id) {
   const arr = users.filter(u => u.id === id);
   return arr[0] ? arr[0].email : 'unknown_email';
-}
-
-// sets color of student output
-function colorCardResult(color) {
-  // dom("#student-info").style.color = isLastUser ? COLORS.GREEN: COLORS.BLACK;
-  dom(".user-entry").style.background = color;
 }
 
 function transformURL(url) {
@@ -387,10 +375,20 @@ function displayError(json) {
   console.log(json)
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
-  entry.className = "user-entry"
+  entry.className = "fail"
   let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
   const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
   text = text.replace(IDRegex, match => IdToEmail(match))
+  entry.innerHTML = text;
+}
+
+function displaySuccess(json) {
+  clearOutput()
+  console.log(json)
+  let entry = document.createElement("div")
+  dom("#student-info").appendChild(entry)
+  entry.className = "success"
+  let text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
   entry.innerHTML = text;
 }
 

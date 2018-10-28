@@ -24,6 +24,24 @@ html {
     margin: 0px;
 }
 
+.success {
+    white-space: pre-wrap;
+    background: lightgreen;
+    border-top: 4px solid rgb(60, 56, 80);
+    padding: 15px;
+    padding-left: 30px;
+    margin: 0px;
+}
+
+.fail {
+    white-space: pre-wrap;
+    background: lightcoral;
+    border-top: 4px solid rgb(60, 56, 80);
+    padding: 15px;
+    padding-left: 30px;
+    margin: 0px;
+}
+
 .form-style-8{
     font-family: 'Roboto', arial, sans;
     width: 80%;
