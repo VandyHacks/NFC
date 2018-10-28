@@ -119,6 +119,12 @@ html {
     }
 }
 
+@media only screen and (max-height: 500px) {
+    .form-style-8 h2 {
+        display: none;
+    }
+}
+
 #checkboxes {
     padding-top: 10px;
 }
