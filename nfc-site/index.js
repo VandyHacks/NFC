@@ -330,6 +330,8 @@ function processErrors(json) {
   let err_msg = json.message || json.error;
   if (!err_msg)
     return false;
+    
+  clearInputs(); // clear input when error
   displayError(err_msg);
   return true;
 }
