@@ -389,9 +389,11 @@ function displayError(json) {
   displayStatus("fail", json, text);
 }
 
+// displays user obj as a nice string
+const stringifyUser = user => `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}\nStatus:\t${user.status}`;
+
 function displaySuccess(json) {
-  const text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
-  displayStatus("success", json, text);
+  displayStatus("success", json, stringifyUser(json));
 }
 
 function displayUsers(json) {
@@ -400,7 +402,6 @@ function displayUsers(json) {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    let text = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}`
-    entry.innerHTML = text;
+    entry.innerHTML = stringifyUser(user);
   });
 }
