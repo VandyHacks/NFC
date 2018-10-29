@@ -370,26 +370,26 @@ function isCheckIn() {
   return EVENT && EVENT.eventType === "CheckIn";
 }
 
-function displayError(json) {
+// helper func for display
+function displayStatus(className, json, text) {
   clearOutput()
   console.log(json)
-  let entry = document.createElement("div")
+  const entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
-  entry.className = "fail"
-  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
-  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  text = text.replace(IDRegex, match => IdToEmail(match))
+  entry.className = className;
   entry.innerHTML = text;
 }
 
+function displayError(json) {
+  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
+  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
+  text = text.replace(IDRegex, match => IdToEmail(match))
+  displayStatus("fail", json, text);
+}
+
 function displaySuccess(json) {
-  clearOutput()
-  console.log(json)
-  let entry = document.createElement("div")
-  dom("#student-info").appendChild(entry)
-  entry.className = "success"
-  let text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
-  entry.innerHTML = text;
+  const text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
+  displayStatus("success", json, text);
 }
 
 function displayUsers(json) {
