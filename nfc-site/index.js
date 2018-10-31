@@ -390,8 +390,11 @@ function displayError(json) {
 }
 
 // displays user obj as a nice string
-const stringifyUser = user => `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}\nStatus:\t${user.status}`;
-
+const stringifyUser = user => {
+  let str = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}\nStatus:\t${user.status}`;
+  if (EVENT.eventType === "Bus")
+    str += `\nBus ticket: ${user.hasBusTicket ? 'IIT/Purdue' : 'false'}`;
+}
 function displaySuccess(json) {
   displayStatus("success", json, stringifyUser(json));
 }
