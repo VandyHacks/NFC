@@ -65,7 +65,8 @@ html {
 }
 .form-style-8 input[type="text"],
 .form-style-8 textarea,
-.form-style-8 select
+.form-style-8 select,
+.form-style-8 password,
 {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
