@@ -387,7 +387,11 @@ function displaySuccess(json) {
   console.log(json)
   let entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
-  entry.className = "success"
+  if (unadmitMode) {
+    entry.className = "success-unadmit"
+  } else {
+    entry.className = "success-admit"
+  }
   let text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
   entry.innerHTML = text;
 }
