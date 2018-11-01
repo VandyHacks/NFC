@@ -397,6 +397,7 @@ const stringifyUser = user => {
   return str;
 }
 function displaySuccess(json) {
+  const unadmitMode = dom("#unadmit-checkbox").checked;
   if (unadmitMode) {
     displayStatus("success-unadmit", json, stringifyUser(json));
   } else {
