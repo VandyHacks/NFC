@@ -73,9 +73,9 @@ html {
     margin: -30px -30px 30px -30px;
 }
 .form-style-8 input[type="text"],
+.form-style-8 input[type="password"],
 .form-style-8 textarea,
 .form-style-8 select,
-.form-style-8 password,
 {
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
