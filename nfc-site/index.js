@@ -330,6 +330,8 @@ function processErrors(json) {
   let err_msg = json.message || json.error;
   if (!err_msg)
     return false;
+
+  clearInputs(); // clear input when error
   displayError(err_msg);
   return true;
 }
@@ -370,30 +372,36 @@ function isCheckIn() {
   return EVENT && EVENT.eventType === "CheckIn";
 }
 
-function displayError(json) {
+// helper func for display
+function displayStatus(className, json, text) {
   clearOutput()
   console.log(json)
-  let entry = document.createElement("div")
+  const entry = document.createElement("div")
   dom("#student-info").appendChild(entry)
-  entry.className = "fail"
-  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
-  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
-  text = text.replace(IDRegex, match => IdToEmail(match))
+  entry.className = className;
   entry.innerHTML = text;
 }
 
+function displayError(json) {
+  let text = `Error: ${json.message}\nUser: ${IdToEmail(json.id)}`
+  const IDRegex = /\w*\d\w*/g; // finds ids (usually alphanumeric)
+  text = text.replace(IDRegex, match => IdToEmail(match))
+  displayStatus("fail", json, text);
+}
+
+// displays user obj as a nice string
+const stringifyUser = user => {
+  let str = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}\nStatus:\t${user.status}`;
+  if (EVENT.eventType === "Bus")
+    str += `\nBus ticket:\t${user.hasBusTicket ? 'IIT/Purdue' : 'false'}`;
+  return str;
+}
 function displaySuccess(json) {
-  clearOutput()
-  console.log(json)
-  let entry = document.createElement("div")
-  dom("#student-info").appendChild(entry)
   if (unadmitMode) {
-    entry.className = "success-unadmit"
+    displayStatus("success-unadmit", json, stringifyUser(json));
   } else {
-    entry.className = "success-admit"
+    displayStatus("success-admit", json, stringifyUser(json));
   }
-  let text = `Name:\t${json.name}\nSchool:\t${json.school}\nEmail:\t${json.email}`
-  entry.innerHTML = text;
 }
 
 function displayUsers(json) {
@@ -402,7 +410,6 @@ function displayUsers(json) {
     let entry = document.createElement("div")
     dom("#student-info").appendChild(entry)
     entry.className = "user-entry"
-    let text = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}`
-    entry.innerHTML = text;
+    entry.innerHTML = stringifyUser(user);
   });
 }
