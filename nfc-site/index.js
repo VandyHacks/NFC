@@ -315,11 +315,10 @@ async function setToken() {
 }
 
 // On auth code popup submit, set the token and call setToken()
-dom("#authcode").addEventListener("keyup", e => {
-  if (e.keyCode === 13) {
-    token = dom("#authcode").value;
-    setToken();
-  }
+dom("#auth-form").addEventListener("submit", e => {
+  token = dom("#authcode").value;
+  setToken();
+  e.preventDefault()
 });
 
 /**************************************************************************************************/
