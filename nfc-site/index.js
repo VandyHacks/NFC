@@ -392,7 +392,7 @@ function displayError(json) {
 const stringifyUser = user => {
   let str = `Name:\t${user.name}\nSchool:\t${user.school}\nEmail:\t${user.email}\nStatus:\t${user.status}`;
   if (EVENT.eventType === "Bus")
-    str += `\nBus ticket:\t${user.hasBusTicket ? 'IIT/Purdue' : 'false'}`;
+    str += `\nBus ticket:\t${user.hasBusTicket ? 'true' : 'false'}`;
   return str;
 }
 function displaySuccess(json) {
