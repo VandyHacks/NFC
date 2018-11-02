@@ -316,9 +316,9 @@ async function setToken() {
 
 // On auth code popup submit, set the token and call setToken()
 dom("#auth-form").addEventListener("submit", e => {
+  e.preventDefault()
   token = dom("#authcode").value;
   setToken();
-  e.preventDefault()
 });
 
 /**************************************************************************************************/
